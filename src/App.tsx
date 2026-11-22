@@ -3,6 +3,7 @@ import './App.css'
 import PricingCalculator from './PricingCalculator'
 import ProductManager from './ProductManager'
 import AnalyticsDashboard from './AnalyticsDashboard'
+import VATCalculator from './VATCalculator'
 
 const platforms = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
 
@@ -255,6 +256,8 @@ function App() {
       <ProductManager currency={currency} />
 
       <AnalyticsDashboard currency={currency} />
+
+      <VATCalculator currency={currency} />
 
       <footer>
         <span className="footer-brand">ProfitPilot</span>

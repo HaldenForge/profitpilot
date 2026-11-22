@@ -622,3 +622,194 @@ footer { display: flex; justify-content: space-between; gap: 12px; padding: 30px
     padding: 13px;
   }
 }
+
+/* VAT Calculator */
+.vat-calculator {
+  margin: 32px 0;
+  padding: 24px;
+  background: var(--card, #fff);
+  color: var(--text, #183b3b);
+  border: 1px solid #dce5e5;
+  border-radius: 16px;
+}
+
+.vat-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.vat-heading h2 {
+  margin: 0 0 7px;
+}
+
+.vat-heading p {
+  margin: 0;
+  color: #718080;
+}
+
+.vat-label {
+  padding: 7px 11px;
+  border-radius: 20px;
+  background: #eaf5f1;
+  color: #087b58;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.vat-input-panel {
+  padding: 20px;
+  background: #f7f9f9;
+  border: 1px solid #e2e9e9;
+  border-radius: 12px;
+}
+
+.vat-mode-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.vat-mode-control button {
+  padding: 10px 14px;
+  border: 1px solid #cbd7d7;
+  border-radius: 8px;
+  background: #fff;
+  color: #183b3b;
+  cursor: pointer;
+  font: inherit;
+}
+
+.vat-mode-control button.vat-mode-active {
+  background: #087b70;
+  color: #fff;
+  border-color: #087b70;
+}
+
+.vat-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.vat-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.vat-fields input,
+.vat-fields select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #cbd7d7;
+  border-radius: 8px;
+  background: #fff;
+  color: #183b3b;
+  font: inherit;
+}
+
+.vat-rate-note {
+  margin: 16px 0 0;
+  color: #718080;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.vat-results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.vat-result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 18px;
+  background: #f7f9f9;
+  border: 1px solid #e2e9e9;
+  border-radius: 12px;
+  min-width: 0;
+}
+
+.vat-result-card span {
+  color: #718080;
+  font-size: 13px;
+}
+
+.vat-result-card strong {
+  font-size: clamp(19px, 2vw, 25px);
+  overflow-wrap: anywhere;
+}
+
+.vat-result-card.vat-highlight {
+  background: #eaf5f1;
+  border-color: #cce6dc;
+}
+
+.vat-result-card.vat-highlight strong {
+  color: #087b58;
+}
+
+.vat-breakdown {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f7f9f9;
+  border-radius: 12px;
+}
+
+.vat-breakdown h3 {
+  margin: 0 0 14px;
+}
+
+.vat-breakdown > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e9e9;
+}
+
+.vat-total-line {
+  font-weight: 700;
+}
+
+.vat-disclaimer {
+  margin: 18px 0 0;
+  color: #718080;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.vat-error {
+  grid-column: 1 / -1;
+  padding: 14px;
+  color: #b42318;
+  background: #fff0ef;
+  border-radius: 8px;
+}
+
+@media (max-width: 650px) {
+  .vat-calculator {
+    padding: 16px;
+  }
+
+  .vat-fields,
+  .vat-results {
+    grid-template-columns: 1fr;
+  }
+
+  .vat-mode-control {
+    flex-direction: column;
+  }
+}
