@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import './App.css'
 import PricingCalculator from './PricingCalculator'
 import ProductManager from './ProductManager'
+import AnalyticsDashboard from './AnalyticsDashboard'
 
 const platforms = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
 
@@ -252,6 +253,8 @@ function App() {
       <PricingCalculator currency={currency} />
 
       <ProductManager currency={currency} />
+
+      <AnalyticsDashboard currency={currency} />
 
       <footer>
         <span className="footer-brand">ProfitPilot</span>

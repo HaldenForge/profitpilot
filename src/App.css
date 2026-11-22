@@ -442,3 +442,183 @@ footer { display: flex; justify-content: space-between; gap: 12px; padding: 30px
     max-width: 100%;
   }
 }
+
+/* Business Analytics Dashboard */
+.analytics-dashboard {
+  margin: 32px 0;
+  padding: 24px;
+  background: var(--card, #fff);
+  color: var(--text, #183b3b);
+  border: 1px solid #dce5e5;
+  border-radius: 16px;
+}
+
+.analytics-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.analytics-heading h2 {
+  margin: 0 0 7px;
+}
+
+.analytics-heading p,
+.analytics-panel p {
+  color: #718080;
+  margin-bottom: 0;
+}
+
+.analytics-live-label {
+  padding: 7px 11px;
+  background: #eaf5f1;
+  color: #087b58;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.analytics-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.analytics-card,
+.analytics-panel {
+  padding: 18px;
+  background: #f7f9f9;
+  border: 1px solid #e2e9e9;
+  border-radius: 12px;
+}
+
+.analytics-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.analytics-card span,
+.analytics-panel-label {
+  color: #718080;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.analytics-card strong {
+  font-size: clamp(19px, 2vw, 25px);
+  overflow-wrap: anywhere;
+}
+
+.analytics-card small {
+  color: #718080;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.analytics-positive {
+  color: #087b58 !important;
+}
+
+.analytics-negative {
+  color: #c03939 !important;
+}
+
+.analytics-secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.analytics-panel > strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 24px;
+  overflow-wrap: anywhere;
+}
+
+.analytics-panel h3 {
+  margin: 0 0 7px;
+}
+
+.marketplace-panel {
+  margin-top: 14px;
+}
+
+.marketplace-chart {
+  display: grid;
+  gap: 20px;
+  margin-top: 22px;
+}
+
+.marketplace-row-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.marketplace-track {
+  height: 12px;
+  background: #e5eded;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.marketplace-bar {
+  height: 100%;
+  min-width: 0;
+  background: #087b70;
+  border-radius: 20px;
+}
+
+.marketplace-bar.negative-bar {
+  background: #c03939;
+}
+
+.marketplace-row small {
+  display: block;
+  margin-top: 6px;
+  color: #718080;
+  font-size: 11px;
+}
+
+.analytics-empty {
+  padding: 20px;
+  text-align: center;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.analytics-disclaimer {
+  margin: 18px 0 0;
+  color: #718080;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 850px) {
+  .analytics-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .analytics-dashboard {
+    padding: 16px;
+  }
+
+  .analytics-secondary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-card {
+    padding: 13px;
+  }
+}

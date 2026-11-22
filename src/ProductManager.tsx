@@ -56,6 +56,7 @@ export default function ProductManager({
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(products))
+      window.dispatchEvent(new Event('profitpilot-products-updated'))
     } catch {
       // Keep the current session usable if browser storage is unavailable.
     }
