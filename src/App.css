@@ -161,3 +161,95 @@ footer { display: flex; justify-content: space-between; gap: 12px; padding: 30px
   .fields { grid-template-columns: 1fr; }
   .welcome-icon { display: none; }
 }
+
+/* Smart Pricing Calculator */
+
+.pricing-tool {
+  margin-top: 25px;
+  padding: 27px;
+}
+
+.pricing-heading {
+  margin-bottom: 22px;
+}
+
+.pricing-heading h2 {
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+.pricing-fields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px 15px;
+}
+
+.pricing-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.pricing-result-box {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 20px;
+  border: 1px solid #e3e8ef;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+.pricing-result-box span {
+  color: #667589;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pricing-result-box strong {
+  font-size: 29px;
+  color: #26384b;
+}
+
+.pricing-result-box small {
+  color: #8995a4;
+  font-size: 11px;
+}
+
+.pricing-result-box.recommended {
+  background: #effaf6;
+  border-color: #a9dece;
+}
+
+.pricing-result-box.recommended strong {
+  color: #168b70;
+}
+
+.pricing-error {
+  background: #fff0ee;
+  color: #b63c30;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+@media(max-width: 760px) {
+  .pricing-fields {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pricing-results {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width: 400px) {
+  .pricing-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .pricing-tool {
+    padding: 18px;
+  }
+}
