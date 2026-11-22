@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'DM Sans', Arial, sans-serif;
+  color: #172337;
+  background: #f5f7fa;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; min-width: 320px; }
+
+button, input, select { font: inherit; }
+
+.app { max-width: 1180px; margin: auto; padding: 0 30px; }
+
+.topbar {
+  height: 76px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5eaf0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #172337;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.brand-icon {
+  width: 37px;
+  height: 37px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: #168b70;
+  font-size: 23px;
+}
+
+.brand-light { color: #168b70; }
+.top-right { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #637086; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #20b486; }
+
+.top-right select {
+  margin-left: 15px;
+  padding: 9px 12px;
+  border: 1px solid #e1e6ed;
+  border-radius: 8px;
+  background: white;
+  color: #172337;
+}
+
+.welcome {
+  margin: 30px 0 35px;
+  padding: 38px 42px;
+  border-radius: 18px;
+  color: white;
+  background: linear-gradient(115deg, #102d40, #174c50);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.eyebrow { font-size: 11px; letter-spacing: 2px; color: #70d8ba; font-weight: 700; }
+.welcome h1 { margin: 13px 0; font-size: clamp(32px, 5vw, 48px); line-height: 1.13; letter-spacing: -2px; }
+.welcome h1 span { color: #70d8ba; }
+.welcome p { color: #c1d3d8; font-size: 14px; }
+.welcome-icon { font-size: 95px; color: #70d8ba; opacity: .85; padding-right: 35px; }
+
+.platform-section { margin-bottom: 25px; }
+.section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+h2 { font-size: 19px; margin: 6px 0; letter-spacing: -.5px; }
+.section-heading p { font-size: 13px; color: #7a8797; margin: 4px 0; }
+.step-label { color: #159273; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; }
+
+.platforms { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 16px; }
+
+.platform {
+  position: relative;
+  min-height: 70px;
+  border: 1px solid #e3e8ef;
+  background: white;
+  border-radius: 11px;
+  color: #526174;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: .2s;
+}
+
+.platform:hover { border-color: #83c9b5; }
+.platform.selected { border: 2px solid #168b70; background: #effaf6; color: #14775f; }
+.platform-symbol { font-size: 21px; font-weight: 800; }
+.check { color: #168b70; font-weight: 800; }
+
+.workspace { display: grid; grid-template-columns: 1.5fr 1fr; gap: 22px; align-items: start; }
+.card, .result-card { background: white; border: 1px solid #e7ebf0; border-radius: 14px; }
+.calculator { padding: 25px; }
+.reset { border: 0; background: #eff6f4; color: #168b70; border-radius: 7px; padding: 8px 12px; cursor: pointer; font-size: 12px; font-weight: 700; }
+
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 19px 16px; margin-top: 25px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field-label { font-size: 12px; font-weight: 700; }
+.field-hint { color: #8a95a4; font-size: 10px; min-height: 14px; }
+.input-wrap { height: 40px; display: flex; align-items: center; border: 1px solid #e0e6ed; border-radius: 7px; background: #fff; overflow: hidden; }
+.input-wrap:focus-within { border-color: #168b70; box-shadow: 0 0 0 2px #168b701c; }
+.input-prefix, .input-suffix { padding: 0 10px; color: #8995a4; font-size: 12px; }
+.input-wrap input { min-width: 0; width: 100%; border: 0; outline: none; padding: 9px 5px; color: #24344a; background: transparent; font-size: 13px; }
+.disclaimer { color: #8995a4; font-size: 10px; line-height: 1.6; margin-top: 24px; }
+
+.results { display: grid; gap: 14px; }
+.result-card { padding: 22px; }
+.profit-card { color: white; background: linear-gradient(140deg, #123c3c, #116f59); border: 0; }
+.result-kicker { font-size: 10px; letter-spacing: 1.4px; color: #a6dbca; font-weight: 700; }
+.profit-amount { font-size: 38px; font-weight: 800; margin: 12px 0 3px; letter-spacing: -1.5px; overflow-wrap: anywhere; }
+.profit-amount.negative { color: #ffb4a9; }
+.result-note { font-size: 11px; color: #b7d7cc; }
+.result-divider { height: 1px; background: #ffffff35; margin: 20px 0; }
+.mini-results { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mini-results div { display: flex; flex-direction: column; gap: 7px; }
+.mini-results span { font-size: 10px; color: #b7d7cc; }
+.mini-results strong { font-size: 19px; }
+
+.breakdown h3 { margin: 0 0 17px; font-size: 15px; }
+.break-row { display: flex; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #eff1f4; font-size: 11px; color: #748194; }
+.break-row strong { color: #29384c; white-space: nowrap; }
+.break-row.total { border: 0; padding-top: 16px; font-weight: 800; color: #26364a; font-size: 13px; }
+.break-row.total strong { color: #168b70; font-size: 15px; }
+
+.export-button { border: 0; padding: 14px; border-radius: 9px; background: #168b70; color: white; font-size: 12px; font-weight: 700; cursor: pointer; }
+.export-button:hover { background: #116e59; }
+
+footer { display: flex; justify-content: space-between; gap: 12px; padding: 30px 0; margin-top: 25px; border-top: 1px solid #e5eaf0; color: #8995a4; font-size: 11px; }
+.footer-brand { font-weight: 800; color: #168b70; }
+
+@media(max-width: 760px) {
+  .app { padding: 0 16px; }
+  .welcome { padding: 27px 22px; }
+  .welcome-icon { font-size: 60px; padding: 0; }
+  .platforms { grid-template-columns: repeat(2, 1fr); }
+  .workspace { grid-template-columns: 1fr; }
+  .fields { gap: 16px 10px; }
+  .calculator { padding: 18px; }
+  footer { flex-wrap: wrap; }
+}
+
+@media(max-width: 400px) {
+  .top-right { font-size: 0; gap: 5px; }
+  .fields { grid-template-columns: 1fr; }
+  .welcome-icon { display: none; }
+}
