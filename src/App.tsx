@@ -4,6 +4,7 @@ import './App.css'
 import { supabase } from './lib/supabase'
 import Auth from './Auth'
 import LandingPage from './LandingPage'
+import LegalPage from './LegalPage'
 import PricingCalculator from './PricingCalculator'
 import ProductManager from './ProductManager'
 import AnalyticsDashboard from './AnalyticsDashboard'
@@ -57,7 +58,7 @@ type Values = typeof initialValues
 function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [checkingAuth, setCheckingAuth] = useState(true)
-  const [publicView, setPublicView] = useState<'home' | 'login' | 'signup'>('home')
+  const [publicView, setPublicView] = useState<'home' | 'login' | 'signup' | 'privacy' | 'terms'>('home')
 
   const [platform, setPlatform] = useState('Amazon FBA')
   const [currency, setCurrency] = useState(getDefaultCurrency)
@@ -207,11 +208,22 @@ function App() {
   }
 
   if (!session) {
+    if (publicView === 'privacy' || publicView === 'terms') {
+      return (
+        <LegalPage
+          page={publicView}
+          onBack={() => setPublicView('home')}
+        />
+      )
+    }
+
     if (publicView === 'home') {
       return (
         <LandingPage
           onLogin={() => setPublicView('login')}
           onSignup={() => setPublicView('signup')}
+          onPrivacy={() => setPublicView('privacy')}
+          onTerms={() => setPublicView('terms')}
         />
       )
     }
