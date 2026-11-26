@@ -1,12 +1,44 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { Session } from '@supabase/supabase-js'
 import './App.css'
+import { supabase } from './lib/supabase'
+import Auth from './Auth'
+import LandingPage from './LandingPage'
 import PricingCalculator from './PricingCalculator'
 import ProductManager from './ProductManager'
 import AnalyticsDashboard from './AnalyticsDashboard'
 import VATCalculator from './VATCalculator'
-
+import { ProductsProvider } from './ProductsContext'
+import { SalesProvider } from './SalesContext'
+import SalesManager from './SalesManager'
+import InventoryManager from './InventoryManager'
+import InventoryNotifications from './InventoryNotifications'
+import ProductResearch from './ProductResearch'
+import KeywordResearch from './KeywordResearch'
+import ProductHunter from './ProductHunter'
+import type { ExchangeRates } from './lib/currency'
 const platforms = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
+const getDefaultCurrency = () => {
+  const savedCurrency = localStorage.getItem('profitpilot-currency')
 
+  if (['GBP', 'USD', 'EUR'].includes(savedCurrency || '')) {
+    return savedCurrency!
+  }
+
+  const region = navigator.language.split('-')[1]?.toUpperCase()
+
+  if (region === 'US') return 'USD'
+
+  const euroCountries = [
+    'AT', 'BE', 'CY', 'DE', 'EE', 'ES', 'FI', 'FR',
+    'GR', 'HR', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT',
+    'NL', 'PT', 'SI', 'SK',
+  ]
+
+  if (region && euroCountries.includes(region)) return 'EUR'
+
+  return 'GBP'
+}
 const initialValues = {
   price: '35',
   product: '12',
@@ -23,9 +55,82 @@ const initialValues = {
 type Values = typeof initialValues
 
 function App() {
+  const [session, setSession] = useState<Session | null>(null)
+  const [checkingAuth, setCheckingAuth] = useState(true)
+  const [publicView, setPublicView] = useState<'home' | 'login' | 'signup'>('home')
+
   const [platform, setPlatform] = useState('Amazon FBA')
-  const [currency, setCurrency] = useState('GBP')
+  const [currency, setCurrency] = useState(getDefaultCurrency)
   const [values, setValues] = useState<Values>(initialValues)
+
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRates | null>(null)
+  const [rateError, setRateError] = useState('')
+
+  useEffect(() => {
+    let mounted = true
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      if (mounted) {
+        setSession(currentSession)
+        setCheckingAuth(false)
+      }
+    })
+
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!mounted) return
+
+      if (error) {
+        console.error('Unable to check login session:', error)
+      }
+
+      setSession(data.session)
+      setCheckingAuth(false)
+    })
+
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('profitpilot-currency', currency)
+  }, [currency])
+
+  useEffect(() => {
+    if (!session) return
+
+    let active = true
+
+    const loadExchangeRates = async () => {
+      const { data, error } = await supabase.functions.invoke(
+        'currency-rates',
+        {
+          body: { base: 'EUR' },
+        }
+      )
+
+      if (!active) return
+
+      if (error || !data?.success) {
+        setRateError(
+          error?.message || data?.error || 'Unable to load exchange rates.'
+        )
+        return
+      }
+
+      setExchangeRates(data as ExchangeRates)
+      setRateError('')
+    }
+
+    void loadExchangeRates()
+
+    return () => {
+      active = false
+    }
+  }, [session?.user.id])
 
   const update = (key: keyof Values, value: string) => {
     setValues(current => ({ ...current, [key]: value }))
@@ -84,11 +189,46 @@ function App() {
     { key: 'fixedFee', label: 'Fixed transaction fee', hint: 'Fixed fee per order' },
     { key: 'advertising', label: 'Advertising cost', hint: 'Advertising spend per item' },
     { key: 'other', label: 'Other costs', hint: 'Packaging and additional expenses' },
-    { key: 'quantity', label: 'Quantity sold', hint: 'Number of items', },
+    { key: 'quantity', label: 'Quantity sold', hint: 'Number of items' },
   ]
 
-  return (
-    <main className="app">
+  if (checkingAuth) {
+    return (
+      <main className="auth-page">
+        <section className="auth-card">
+          <div className="auth-brand">
+            <span className="brand-icon">P</span>
+            <span>Profit<span className="brand-light">Pilot</span></span>
+          </div>
+          <p>Checking your account...</p>
+        </section>
+      </main>
+    )
+  }
+
+  if (!session) {
+    if (publicView === 'home') {
+      return (
+        <LandingPage
+          onLogin={() => setPublicView('login')}
+          onSignup={() => setPublicView('signup')}
+        />
+      )
+    }
+
+    return (
+      <Auth
+        key={publicView}
+        initialMode={publicView}
+        onBack={() => setPublicView('home')}
+      />
+    )
+  }
+
+    return (
+    <ProductsProvider userId={session.user.id}>
+      <SalesProvider userId={session.user.id}>
+        <main className="app">
       <header className="topbar">
         <a className="brand" href="#">
           <span className="brand-icon">P</span>
@@ -102,6 +242,23 @@ function App() {
             <option value="USD">USD $</option>
             <option value="EUR">EUR €</option>
           </select>
+          {exchangeRates && (
+            <span className="currency-rate-status">
+              Rates updated: {exchangeRates.updatedAt}
+            </span>
+          )}
+          {rateError && (
+            <span className="currency-rate-status">
+              Exchange rates unavailable
+            </span>
+          )}
+          <span className="auth-user">{session.user.email}</span>
+          <button
+            className="auth-logout"
+            onClick={() => { void supabase.auth.signOut() }}
+          >
+            Sign out
+          </button>
         </div>
       </header>
 
@@ -113,6 +270,20 @@ function App() {
         </div>
         <div className="welcome-icon">↗</div>
       </section>
+
+<nav className="dashboard-nav">
+  <a href="#profit-calculator">Profit Calculator</a>
+  <a href="#pricing-section">Pricing Calculator</a>
+  <a href="#products-section">Products</a>
+  <a href="#inventory-section">Inventory</a>
+  <a href="#sales-section">Sales & Orders</a>
+  <a href="#analytics-section">Analytics</a>
+  <a href="#vat-section">VAT Calculator</a>
+  <a href="#research-section">Product Research</a>
+  <a href="#keyword-research-section">Keyword Research</a>
+</nav>
+
+<InventoryNotifications />
 
       <section className="platform-section">
         <div className="section-heading">
@@ -141,7 +312,7 @@ function App() {
       </section>
 
       <div className="workspace">
-        <section className="calculator card">
+        <section id="profit-calculator" className="calculator card">
           <div className="section-heading">
             <div>
               <span className="step-label">STEP 02</span>
@@ -251,20 +422,42 @@ function App() {
         </aside>
       </div>
 
-      <PricingCalculator currency={currency} />
+      <div id="pricing-section">
+  <PricingCalculator currency={currency} />
+</div>
 
-      <ProductManager currency={currency} />
+      <div id="products-section">
+  <ProductManager currency={currency} />
+</div>
+      <div id="inventory-section">
+  <InventoryManager currency={currency} />
+</div>
+      <div id="analytics-section">
+  <AnalyticsDashboard currency={currency} />
+</div>
+      <div id="sales-section">
+  <SalesManager currency={currency} />
+</div>
 
-      <AnalyticsDashboard currency={currency} />
-
-      <VATCalculator currency={currency} />
-
+      <div id="vat-section">
+  <VATCalculator currency={currency} />
+</div>
+      <div id="product-hunter-section">
+  <ProductHunter currency={currency} exchangeRates={exchangeRates} />
+</div><div id="research-section">
+        <ProductResearch currency={currency} />
+      </div>
+            <div id="keyword-research-section">
+        <KeywordResearch />
+      </div>
       <footer>
         <span className="footer-brand">ProfitPilot</span>
         <span>Simple tools for smarter selling.</span>
         <span>© 2026 ProfitPilot</span>
       </footer>
-    </main>
+            </main>
+      </SalesProvider>
+    </ProductsProvider>
   )
 }
 

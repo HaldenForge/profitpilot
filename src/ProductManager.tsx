@@ -1,66 +1,33 @@
-import { useEffect, useMemo, useState } from 'react'
-
-type Product = {
-  id: string
-  name: string
-  marketplace: string
-  productCost: number
-  sellingPrice: number
-  shippingCost: number
-  feePercent: number
-}
-
-const STORAGE_KEY = 'profitpilot-products'
+import { useMemo, useState, type FormEvent } from 'react'
+import { useProducts, type Product } from './ProductsContext'
 
 const marketplaces = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
-
-function loadProducts(): Product[] {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (!saved) return []
-
-    const parsed: unknown = JSON.parse(saved)
-    if (!Array.isArray(parsed)) return []
-
-    return parsed.filter((item): item is Product =>
-      item !== null &&
-      typeof item === 'object' &&
-      typeof item.id === 'string' &&
-      typeof item.name === 'string' &&
-      typeof item.marketplace === 'string' &&
-      Number.isFinite(item.productCost) &&
-      Number.isFinite(item.sellingPrice) &&
-      Number.isFinite(item.shippingCost) &&
-      Number.isFinite(item.feePercent)
-    )
-  } catch {
-    return []
-  }
-}
 
 export default function ProductManager({
   currency,
 }: {
   currency: string
 }) {
-  const [products, setProducts] = useState<Product[]>(loadProducts)
+  const {
+    products,
+    loading,
+    error,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+  } = useProducts()
+
   const [name, setName] = useState('')
   const [marketplace, setMarketplace] = useState('Amazon FBA')
   const [productCost, setProductCost] = useState('0')
   const [sellingPrice, setSellingPrice] = useState('0')
   const [shippingCost, setShippingCost] = useState('0')
   const [feePercent, setFeePercent] = useState('15')
+  const [stockQuantity, setStockQuantity] = useState('0')
+const [lowStockThreshold, setLowStockThreshold] = useState('5')
   const [search, setSearch] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(products))
-      window.dispatchEvent(new Event('profitpilot-products-updated'))
-    } catch {
-      // Keep the current session usable if browser storage is unavailable.
-    }
-  }, [products])
+  const [saving, setSaving] = useState(false)
 
   const money = (value: number) =>
     new Intl.NumberFormat(undefined, {
@@ -91,10 +58,13 @@ export default function ProductManager({
     setSellingPrice('0')
     setShippingCost('0')
     setFeePercent('15')
+setStockQuantity('0')
+setLowStockThreshold('5')
+setLowStockThreshold('5')
     setEditingId(null)
   }
 
-  function saveProduct(event: React.FormEvent<HTMLFormElement>) {
+  async function saveProduct(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const values = [
@@ -112,23 +82,36 @@ export default function ProductManager({
       return
     }
 
-    const product: Product = {
-      id: editingId ?? crypto.randomUUID(),
-      name: name.trim(),
-      marketplace,
-      productCost: values[0],
-      sellingPrice: values[1],
-      shippingCost: values[2],
-      feePercent: values[3],
+    const product = {
+  name: name.trim(),
+  marketplace,
+  productCost: values[0],
+  sellingPrice: values[1],
+  shippingCost: values[2],
+  feePercent: values[3],
+  stockQuantity: Number(stockQuantity),
+  lowStockThreshold: Number(lowStockThreshold),
+}
+
+    setSaving(true)
+
+    try {
+      if (editingId) {
+        await updateProduct(editingId, product)
+      } else {
+        await addProduct(product)
+      }
+
+      resetForm()
+    } catch (deleteError) {
+      window.alert(
+        deleteError instanceof Error
+          ? deleteError.message
+          : 'Could not delete product. Please try again.'
+      )
+    } finally {
+      setSaving(false)
     }
-
-    setProducts((current) =>
-      editingId
-        ? current.map((item) => item.id === editingId ? product : item)
-        : [product, ...current]
-    )
-
-    resetForm()
   }
 
   function editProduct(product: Product) {
@@ -139,15 +122,21 @@ export default function ProductManager({
     setSellingPrice(String(product.sellingPrice))
     setShippingCost(String(product.shippingCost))
     setFeePercent(String(product.feePercent))
+    setStockQuantity(String(product.stockQuantity))
+setLowStockThreshold(String(product.lowStockThreshold))
   }
 
-  function deleteProduct(id: string) {
+  async function removeProduct(id: string) {
     if (!window.confirm('Are you sure you want to delete this product?')) {
       return
     }
 
-    setProducts((current) => current.filter((item) => item.id !== id))
-    if (editingId === id) resetForm()
+    try {
+      await deleteProduct(id)
+      if (editingId === id) resetForm()
+    } catch {
+      // The shared context displays the Supabase error.
+    }
   }
 
   const totalProfit = products.reduce(
@@ -194,7 +183,7 @@ export default function ProductManager({
               onChange={(event) => setMarketplace(event.target.value)}
             >
               {marketplaces.map((item) => (
-                <option key={item}>{item}</option>
+                <option key={item} value={item}>{item}</option>
               ))}
             </select>
           </label>
@@ -245,20 +234,58 @@ export default function ProductManager({
               onChange={(event) => setFeePercent(event.target.value)}
               required
             />
-          </label>
+          </label><label>
+  Stock quantity
+  <input
+    type="number"
+    min="0"
+    step="1"
+    value={stockQuantity}
+    onChange={(event) => setStockQuantity(event.target.value)}
+    required
+  />
+</label>
+
+<label>
+  Low-stock alert threshold
+  <input
+    type="number"
+    min="0"
+    step="1"
+    value={lowStockThreshold}
+    onChange={(event) => setLowStockThreshold(event.target.value)}
+    required
+  />
+</label>
         </div>
 
         <div className="product-form-actions">
-          <button type="submit">
-            {editingId ? 'Update Product' : 'Save Product'}
+          <button type="submit" disabled={saving || loading}>
+            {saving
+              ? 'Saving...'
+              : editingId
+                ? 'Update Product'
+                : 'Save Product'}
           </button>
+
           {editingId && (
-            <button type="button" className="secondary-button" onClick={resetForm}>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={resetForm}
+              disabled={saving}
+            >
               Cancel
             </button>
           )}
         </div>
       </form>
+
+      {error && (
+        <p role="alert" className="product-empty">
+          {error}
+        </p>
+      )}
 
       <div className="product-list-heading">
         <h3>Your Products</h3>
@@ -270,7 +297,9 @@ export default function ProductManager({
         />
       </div>
 
-      {filteredProducts.length === 0 ? (
+      {loading ? (
+        <p className="product-empty">Loading your cloud products...</p>
+      ) : filteredProducts.length === 0 ? (
         <p className="product-empty">
           {products.length === 0
             ? 'No products added yet. Add your first product above.'
@@ -298,13 +327,16 @@ export default function ProductManager({
                     {money(profit(product))}
                   </td>
                   <td className="product-actions">
-                    <button type="button" onClick={() => editProduct(product)}>
+                    <button
+                      type="button"
+                      onClick={() => editProduct(product)}
+                    >
                       Edit
                     </button>
                     <button
                       type="button"
                       className="delete-button"
-                      onClick={() => deleteProduct(product.id)}
+                      onClick={() => void removeProduct(product.id)}
                     >
                       Delete
                     </button>
