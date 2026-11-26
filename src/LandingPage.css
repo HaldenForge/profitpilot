@@ -1329,3 +1329,18 @@
     transition: none;
   }
 }
+
+
+/* Small privacy reassurance in the public footer */
+.landing-footer-privacy-note {
+  max-width: 760px;
+  margin-top: 20px;
+  color: #84918e;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.landing-footer-privacy-note strong {
+  color: #53665f;
+  font-weight: 700;
+}
