@@ -4,6 +4,8 @@ import HeroCarousel from './HeroCarousel'
 type LandingPageProps = {
   onLogin: () => void
   onSignup: () => void
+  onPrivacy: () => void
+  onTerms: () => void
 }
 
 const features = [
@@ -51,6 +53,8 @@ const marketplaces = [
 export default function LandingPage({
   onLogin,
   onSignup,
+  onPrivacy,
+  onTerms,
 }: LandingPageProps) {
   return (
     <main className="landing-page">
@@ -239,42 +243,8 @@ export default function LandingPage({
           <a href="#pricing">Membership</a>
           <a href="#about">About</a>
           <a href="mailto:mountainforge786@gmail.com">Contact</a>
-          <a href="#privacy">Privacy Policy</a>
-          <a href="#terms">Terms of Service</a>
-        </div>
-
-        <div className="landing-legal" id="privacy">
-          <h3>Privacy Policy</h3>
-          <p><strong>Last updated: 26 November 2026</strong></p>
-          <p><strong>Who we are.</strong> ProfitPilot is an independent software project operated by Roman Eli, an individual developer based in England. It is not operated by Romans Group Ltd or another registered company. Contact: <a href="mailto:mountainforge786@gmail.com">mountainforge786@gmail.com</a>. Postal address: 10 Butterwick Close, Manchester, M12 5RA, United Kingdom.</p>
-          <p><strong>Information we handle.</strong> When you register or sign in, Supabase authentication processes your account identifier and email address and handles your password. ProfitPilot does not receive or store your password in its application tables. Depending on the features you use, information may include product names, marketplaces, costs, prices, stock levels, inventory movements, sales and order details, product research, keywords, notes and your chosen display currency. Product and currency information may also be stored in your browser's local storage. Do not enter payment-card details or sensitive personal information into free-text fields.</p>
-          <p><strong>How we use information.</strong> We use this information to create and manage accounts, provide calculators and workspace features, save and display your business records, support product and keyword research, calculate currency conversions, respond to support requests, maintain service security and troubleshoot errors.</p>
-          <p><strong>Where information is processed.</strong> The app uses Supabase for authentication, database storage and server functions, and Cloudflare Pages to host the website. The currency-rates function requests reference exchange rates from Frankfurter using currency codes; it does not send your product or sales records to that service. The current Product Hunter function does not connect to live marketplace data providers and returns no live marketplace results. Hosting and service providers may process technical connection information such as IP address, device/browser information and request logs under their own policies.</p>
-          <p><strong>Legal grounds.</strong> Where UK data protection law applies, we generally process account and workspace information because it is needed to provide the service you request (contract), for legitimate interests such as keeping the service secure and maintaining it, or to meet legal obligations. Where consent is required, we will ask for it and you can withdraw it.</p>
-          <p><strong>Storage and retention.</strong> Account and workspace records are kept while needed to operate your account and provide the service. You can delete individual product research and keyword research records and manage certain sales and product records within the app. There is currently no self-service account deletion control. To request account and associated personal-data deletion, email us. We may retain information where required by law, to resolve disputes, protect the service or maintain necessary backups; backup deletion periods depend on the relevant provider.</p>
-          <p><strong>International processing and security.</strong> Our service providers may process information in countries outside the UK. Where UK data protection law requires safeguards for an international transfer, the relevant provider's applicable transfer arrangements should apply. We use established hosting and database providers and take reasonable steps appropriate to an independent early-stage service, but no internet transmission or storage system can be guaranteed completely secure. Use a strong, unique password and sign out on shared devices.</p>
-          <p><strong>Cookies and local storage.</strong> The application uses browser local storage for product data/cache and your currency preference. Supabase authentication may use browser storage to maintain your signed-in session. The application source reviewed for this policy does not include a third-party advertising or analytics tracker. Your browser, hosting provider or service providers may use essential technical technologies and logs to deliver and protect the service.</p>
-          <p><strong>Your rights.</strong> Depending on the circumstances, you may have rights to request access, correction, deletion, restriction or transfer of your personal data, or to object to certain processing. These rights are not absolute and legal exceptions may apply. To make a request, email <a href="mailto:mountainforge786@gmail.com">mountainforge786@gmail.com</a>. You may also complain to the UK Information Commissioner's Office at <a href="https://ico.org.uk/make-a-complaint/" target="_blank" rel="noreferrer">ico.org.uk</a>.</p>
-          <p><strong>Children.</strong> ProfitPilot is a business tool and is not intended for children.</p>
-          <p><strong>Changes and contact.</strong> We may update this notice as the service changes. The latest version will be published here. Contact Roman Eli, ProfitPilot, 10 Butterwick Close, Manchester, M12 5RA, United Kingdom, or <a href="mailto:mountainforge786@gmail.com">mountainforge786@gmail.com</a>.</p>
-        </div>
-
-        <div className="landing-legal" id="terms">
-          <h3>Terms of Service</h3>
-          <p><strong>Last updated: 26 November 2026</strong></p>
-          <p><strong>1. About these terms.</strong> These terms govern your use of ProfitPilot, an independent software project operated by Roman Eli, an individual developer based in England. ProfitPilot is not operated by Romans Group Ltd. By creating an account or using the service, you agree to these terms. If you do not agree, do not use the service.</p>
-          <p><strong>2. The service.</strong> ProfitPilot provides ecommerce tools including profit and pricing calculations, product and inventory management, sales records, analytics, and product and keyword research features. Features may change as the service develops. Membership plans and paid subscriptions displayed as “Coming Soon” are not currently available for purchase. No paid plan or recurring charge applies unless a paid offer is expressly introduced and you separately agree to it.</p>
-          <p><strong>3. No professional advice or guarantee.</strong> ProfitPilot is an information and record-keeping tool, not accounting, tax, legal, investment or other professional advice. Calculations and research may be estimates, may rely on information you enter, and may not reflect current marketplace fees, taxes, exchange rates, shipping costs, rules or market conditions. Product Hunter does not currently provide live marketplace results. You must independently verify all inputs and outputs before making a business decision. We do not guarantee sales, profits, rankings, demand or business results.</p>
-          <p><strong>4. Your account and responsibilities.</strong> You must provide accurate registration information, keep your sign-in details confidential and promptly tell us if you suspect unauthorised access. You are responsible for activity carried out through your account. You must only upload information you are entitled to use and must not use the service unlawfully, interfere with its operation, attempt unauthorised access, introduce malicious code, or misuse third-party marketplaces or services.</p>
-          <p><strong>5. Your content and records.</strong> You retain your rights in the business information and content you submit. You give us permission to process it only as reasonably necessary to operate, maintain and support ProfitPilot. You are responsible for keeping your own copies of important business records. The service is not a guaranteed backup or archival service.</p>
-          <p><strong>6. Availability and changes.</strong> ProfitPilot is an early-stage service and may be changed, interrupted, suspended or withdrawn for maintenance, security, legal or operational reasons. We aim to keep the service available but do not promise uninterrupted or error-free operation. We may suspend access where reasonably necessary to protect users, the service or comply with law.</p>
-          <p><strong>7. Intellectual property.</strong> The ProfitPilot name, branding, software, design and materials are owned by or licensed to the operator and may not be copied, redistributed or commercially exploited without permission, except where the law allows. These terms do not transfer ownership of your own data to us.</p>
-          <p><strong>8. Third-party services.</strong> The service relies on providers such as Supabase and Cloudflare and may refer to third-party marketplaces or websites. Their services are subject to their own terms and privacy notices. We are not responsible for third-party services that we do not control.</p>
-          <p><strong>9. Liability.</strong> Nothing in these terms excludes or limits liability where it would be unlawful to do so, including liability for fraud or for death or personal injury caused by negligence. To the extent permitted by law, we are not liable for indirect or consequential loss, lost profits, lost business opportunities, or decisions made in reliance on unverified calculations or research. If you use ProfitPilot as a consumer, nothing in these terms removes rights that cannot legally be excluded.</p>
-          <p><strong>10. Ending use.</strong> You may stop using ProfitPilot at any time. You can request account deletion by emailing <a href="mailto:mountainforge786@gmail.com">mountainforge786@gmail.com</a>. We may restrict or end access where reasonably necessary for a breach of these terms, security, legal compliance or discontinuation of the service. Any information retained after closure will be handled under the Privacy Policy and applicable law.</p>
-          <p><strong>11. Governing law.</strong> These terms are governed by the laws of England and Wales. Courts in England and Wales will have jurisdiction, subject to any mandatory rights you may have under applicable consumer law.</p>
-          <p><strong>12. Contact.</strong> Roman Eli, ProfitPilot, 10 Butterwick Close, Manchester, M12 5RA, United Kingdom. Email: <a href="mailto:mountainforge786@gmail.com">mountainforge786@gmail.com</a>.</p>
-          <p><em>These terms and this privacy notice are general templates for an early-stage service, not legal advice. Please obtain UK legal and data-protection advice before relying on them as a final compliance review.</em></p>
+          <button type="button" onClick={onPrivacy}>Privacy Policy</button>
+          <button type="button" onClick={onTerms}>Terms of Service</button>
         </div>
 
         <div className="landing-footer-bottom">
