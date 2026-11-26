@@ -238,6 +238,10 @@ export default function LandingPage({
           <p>Practical tools for smarter ecommerce decisions.</p>
         </div>
 
+        <div className="landing-footer-privacy-note">
+          <strong>Your privacy matters.</strong> We use trusted service providers to operate ProfitPilot and handle the information needed to provide our services.
+        </div>
+
         <div className="landing-footer-links">
           <a href="#features">Features</a>
           <a href="#pricing">Membership</a>
