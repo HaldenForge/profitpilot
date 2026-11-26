@@ -67,7 +67,8 @@
 }
 
 .landing-nav a,
-.landing-footer-links a {
+.landing-footer-links a,
+.landing-footer-links button {
   color: #617184;
   text-decoration: none;
   font-size: 13px;
@@ -75,8 +76,16 @@
   transition: color .2s;
 }
 
+.landing-footer-links button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
 .landing-nav a:hover,
-.landing-footer-links a:hover {
+.landing-footer-links a:hover,
+.landing-footer-links button:hover {
   color: var(--lp-green);
 }
 
