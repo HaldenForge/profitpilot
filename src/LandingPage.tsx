@@ -230,7 +230,7 @@ export default function LandingPage({
       </section>
 
       <footer className="landing-footer">
-        <div className="landing-footer-main">
+        <div className="landing-footer-brand">
           <a className="landing-brand" href="#home">
             <span className="landing-brand-icon">P</span>
             <span>Profit<span>Pilot</span></span>
@@ -238,17 +238,26 @@ export default function LandingPage({
           <p>Practical tools for smarter ecommerce decisions.</p>
         </div>
 
-        <div className="landing-footer-privacy-note">
-          <strong>Your privacy matters.</strong> We use trusted service providers to operate ProfitPilot and handle the information needed to provide our services.
-        </div>
+        <div className="landing-footer-panels">
+          <section className="landing-footer-panel">
+            <h3>Explore ProfitPilot</h3>
+            <a href="#features">Our Features</a>
+            <a href="#pricing">Membership Plans</a>
+            <a href="#about">About ProfitPilot</a>
+            <a href="mailto:mountainforge786@gmail.com">Contact Us</a>
+          </section>
 
-        <div className="landing-footer-links">
-          <a href="#features">Features</a>
-          <a href="#pricing">Membership</a>
-          <a href="#about">About</a>
-          <a href="mailto:mountainforge786@gmail.com">Contact</a>
-          <button type="button" onClick={onPrivacy}>Privacy Policy</button>
-          <button type="button" onClick={onTerms}>Terms of Service</button>
+          <section className="landing-footer-panel">
+            <h3>Legal & Policies</h3>
+            <button type="button" onClick={onPrivacy}>Privacy Policy <span>Read how we handle your information →</span></button>
+            <button type="button" onClick={onTerms}>Terms of Service <span>Read the rules for using ProfitPilot →</span></button>
+          </section>
+
+          <section className="landing-footer-panel landing-footer-privacy-panel">
+            <h3>Your Privacy Matters</h3>
+            <p>We use trusted service providers to operate ProfitPilot and handle the information needed to provide our services. We do not sell your personal information.</p>
+            <a href="mailto:mountainforge786@gmail.com">Privacy questions? Contact us</a>
+          </section>
         </div>
 
         <div className="landing-footer-bottom">
