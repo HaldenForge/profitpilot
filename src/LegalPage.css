@@ -33,7 +33,7 @@
   font: inherit; font-weight: 700;
 }
 .legal-document {
-  width: min(900px, calc(100% - 36px));
+  width: min(1080px, calc(100% - 36px));
   margin: 48px auto 70px;
   padding: clamp(25px, 5vw, 58px);
   border: 1px solid #e5ebef;
