@@ -7,17 +7,15 @@ type DeferredSectionProps = {
 
 export default function DeferredSection({ children }: DeferredSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [shouldLoad, setShouldLoad] = useState(false)
+  const [shouldLoad, setShouldLoad] = useState(
+    () => typeof IntersectionObserver === 'undefined'
+  )
 
   useEffect(() => {
+    if (shouldLoad) return
+
     const container = containerRef.current
-
     if (!container) return
-
-    if (typeof IntersectionObserver === 'undefined') {
-      setShouldLoad(true)
-      return
-    }
 
     const observer = new IntersectionObserver(
       entries => {
@@ -32,7 +30,7 @@ export default function DeferredSection({ children }: DeferredSectionProps) {
     observer.observe(container)
 
     return () => observer.disconnect()
-  }, [])
+  }, [shouldLoad])
 
   return (
     <div ref={containerRef} className="deferred-section">
