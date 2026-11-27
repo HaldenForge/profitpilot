@@ -49,8 +49,6 @@ export default function KeywordResearch() {
   const [error, setError] = useState('')
 
   async function loadKeywords() {
-    setLoading(true)
-    setError('')
 
     const { data, error } = await supabase
       .from('keyword_research')
@@ -67,7 +65,27 @@ export default function KeywordResearch() {
   }
 
   useEffect(() => {
-    void loadKeywords()
+    let isActive = true
+
+    void supabase
+      .from('keyword_research')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (!isActive) return
+
+        if (error) {
+          setError(error.message)
+        } else {
+          setKeywords((data || []) as KeywordRecord[])
+        }
+
+        setLoading(false)
+      })
+
+    return () => {
+      isActive = false
+    }
   }, [])
 
   async function saveKeyword(e: React.FormEvent<HTMLFormElement>) {

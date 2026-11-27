@@ -178,7 +178,7 @@ export function SalesProvider({
     )
 
     window.dispatchEvent(new Event('profitpilot-inventory-updated'))
-  }, [userId])
+  }, [])
 
   const updateSale = useCallback(async (
     id: string,
@@ -227,7 +227,7 @@ export function SalesProvider({
     )
 
     window.dispatchEvent(new Event('profitpilot-inventory-updated'))
-  }, [userId])
+  }, [])
 
   const deleteSale = useCallback(async (id: string) => {
     setError('')
@@ -249,7 +249,7 @@ export function SalesProvider({
     )
 
     window.dispatchEvent(new Event('profitpilot-inventory-updated'))
-  }, [userId])
+  }, [])
 
   return (
     <SalesContext.Provider
@@ -267,6 +267,8 @@ export function SalesProvider({
   )
 }
 
+// This context hook is intentionally exported alongside its provider.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useSales() {
   const context = useContext(SalesContext)
 

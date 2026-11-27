@@ -5,7 +5,7 @@ import { withSupabase } from "@supabase/server";
 const SUPPORTED = ["GBP", "USD", "EUR"];
 
 export default {
-  fetch: withSupabase({ auth: "user" }, async (req, _ctx) => {
+  fetch: withSupabase({ auth: "user" }, async (req) => {
     if (req.method !== "POST") {
       return Response.json(
         { success: false, error: "Only POST requests are supported." },
