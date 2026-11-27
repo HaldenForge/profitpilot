@@ -17,6 +17,7 @@ import InventoryNotifications from './InventoryNotifications'
 import ProductResearch from './ProductResearch'
 import KeywordResearch from './KeywordResearch'
 import ProductHunter from './ProductHunter'
+import BusinessInsights from './BusinessInsights'
 import type { ExchangeRates } from './lib/currency'
 const platforms = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
 const getDefaultCurrency = () => {
@@ -283,7 +284,7 @@ function App() {
         <div className="welcome-icon">↗</div>
       </section>
 
-<nav className="dashboard-nav">
+<nav className="dashboard-nav">\n  <a href="#business-insights-section">Business Insights</a>
   <a href="#profit-calculator">Profit Calculator</a>
   <a href="#pricing-section">Pricing Calculator</a>
   <a href="#products-section">Products</a>
@@ -295,7 +296,7 @@ function App() {
   <a href="#keyword-research-section">Keyword Research</a>
 </nav>
 
-<InventoryNotifications />
+<InventoryNotifications />\n\n      <div id="business-insights-section">\n        <BusinessInsights currency={currency} />\n      </div>
 
       <section className="platform-section">
         <div className="section-heading">
