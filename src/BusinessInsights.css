@@ -40,3 +40,5 @@
 .bi-research-product>b{font-size:11px;color:#6c65c7;white-space:nowrap}
 @media(max-width:850px){.bi-products-panel,.bi-research-products-panel{grid-column:1/-1}}
 @media(max-width:600px){.bi-product-row{grid-template-columns:38px minmax(0,1fr) auto 20px;gap:7px}.bi-product-thumb{width:38px;height:38px}.bi-research-product{grid-template-columns:42px minmax(0,1fr) auto}.bi-research-product img,.bi-research-placeholder{width:42px;height:42px}}
+
+.bi-product-photo{object-fit:contain;padding:3px;background:#fff;border:1px solid var(--bi-border)}
