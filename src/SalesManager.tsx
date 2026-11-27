@@ -8,6 +8,7 @@ import {
   type SaleInput,
   type SaleStatus,
 } from './SalesContext'
+import { validateSaleInput } from './lib/inputValidation'
 
 type SalesManagerProps = {
   currency: string
@@ -86,22 +87,6 @@ export default function SalesManager({ currency }: SalesManagerProps) {
     const shippingCost = Number(form.shippingCost)
     const feePercent = Number(form.feePercent)
 
-    if (
-      !Number.isInteger(quantity) ||
-      quantity < 1 ||
-      !Number.isFinite(sellingPrice) ||
-      sellingPrice < 0 ||
-      !Number.isFinite(productCost) ||
-      productCost < 0 ||
-      !Number.isFinite(shippingCost) ||
-      shippingCost < 0 ||
-      !Number.isFinite(feePercent) ||
-      feePercent < 0
-    ) {
-      setMessage('Please enter valid numbers. Quantity must be at least 1.')
-      return
-    }
-
     const sale: SaleInput = {
       productId: selectedProduct.id,
       orderId: form.orderId.trim(),
@@ -116,8 +101,9 @@ export default function SalesManager({ currency }: SalesManagerProps) {
       orderDate: form.orderDate,
     }
 
-    if (!sale.orderId || !sale.orderDate) {
-      setMessage('Please enter an order ID and order date.')
+    const validationError = validateSaleInput(sale)
+    if (validationError) {
+      setMessage(validationError)
       return
     }
 
@@ -375,6 +361,7 @@ export default function SalesManager({ currency }: SalesManagerProps) {
                 <input
                   type="number"
                   min="0"
+                  max="100"
                   step="0.01"
                   value={form.feePercent}
                   onChange={(event) =>
