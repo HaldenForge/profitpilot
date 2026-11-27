@@ -301,7 +301,7 @@ function App() {
 <InventoryNotifications />
 
       <div id="business-insights-section">
-        <BusinessInsights currency={currency} />
+        <BusinessInsights currency={currency} userId={session.user.id} />
       </div>
 
       <section className="platform-section">
