@@ -48,6 +48,12 @@ function trendPath(values: number[], width: number, height: number) {
 }
 
 export default function BusinessInsights({ currency, userId }: { currency: string; userId: string }) {
+  const themeKey = 'profitpilot-dashboard-theme-' + userId
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => localStorage.getItem(themeKey) === 'dark' ? 'dark' : 'light')
+
+  useEffect(() => {
+    localStorage.setItem(themeKey, theme)
+  }, [theme, themeKey])
   const { products, loading: productsLoading, error: productsError } = useProducts()
   const { sales, loading: salesLoading, error: salesError } = useSales()
   const [researchProducts, setResearchProducts] = useState<ResearchRow[]>([])
@@ -151,14 +157,14 @@ export default function BusinessInsights({ currency, userId }: { currency: strin
   const qualityValues = [researchQuality.verified, researchQuality.estimated, researchQuality.entered, researchQuality.unavailable]
 
   return (
-    <section className="business-intelligence">
+    <section className="business-intelligence" data-theme={theme}>
       <div className="bi-heading">
         <div>
           <span className="bi-eyebrow">PROFITPILOT · BUSINESS INTELLIGENCE</span>
           <h2>Business Intelligence Dashboard</h2>
           <p>Your business performance, research signals and recommended next steps in one place.</p>
         </div>
-        <span className="bi-beta">RULE-BASED BETA</span>
+        <div className="bi-heading-actions"><button className="bi-theme-toggle" type="button" onClick={() => setTheme(current => current === 'light' ? 'dark' : 'light')}>{theme === 'light' ? 'Use dark theme' : 'Use light theme'}</button><span className="bi-beta">RULE-BASED BETA</span></div>
       </div>
 
       {errors.length > 0 && <div className="bi-error" role="alert">Some account data could not be loaded: {errors.join(' · ')}</div>}
