@@ -248,7 +248,7 @@ function App() {
           <span className="brand-icon">P</span>
           <span>Profit<span className="brand-light">Pilot</span></span>
         </a>
-        <div className="top-right">
+        <div className="top-right" id="account-settings">
           <span className="live-dot" /> Profit calculator
           <select aria-label="Currency" value={currency}
             onChange={e => setCurrency(e.target.value)}>
@@ -285,19 +285,27 @@ function App() {
         <div className="welcome-icon">↗</div>
       </section>
 
-<nav className="dashboard-nav">
-  <a href="#business-insights-section">Business Insights</a>
-  <a href="#profit-calculator">Profit Calculator</a>
-  <a href="#pricing-section">Pricing Calculator</a>
-  <a href="#products-section">Products</a>
-  <a href="#inventory-section">Inventory</a>
-  <a href="#sales-section">Sales & Orders</a>
-  <a href="#analytics-section">Analytics</a>
-  <a href="#vat-section">VAT Calculator</a>
-  <a href="#research-section">Product Research</a>
-  <a href="#keyword-research-section">Keyword Research</a>
-</nav>
-
+<div className="app-workspace">
+  <aside className="app-sidebar" aria-label="Main navigation">
+    <div className="sidebar-brand-mark">P</div>
+    <span className="sidebar-label">WORKSPACE</span>
+    <nav className="dashboard-nav">
+      <a href="#business-insights-section"><span>▦</span> Overview</a>
+      <a href="#profit-calculator"><span>⌁</span> Profit Calculator</a>
+      <a href="#pricing-section"><span>◇</span> Smart Pricing</a>
+      <a href="#products-section"><span>▣</span> Products</a>
+      <a href="#inventory-section"><span>▤</span> Inventory</a>
+      <a href="#sales-section"><span>🛒</span> Orders & Sales</a>
+      <a href="#analytics-section"><span>▥</span> Analytics</a>
+      <a href="#product-hunter-section"><span>⌕</span> Product Hunter</a>
+      <a href="#research-section"><span>◎</span> Product Research</a>
+      <a href="#keyword-research-section"><span>⌗</span> Keyword Research</a>
+      <a href="#vat-section"><span>▧</span> VAT Calculator</a>
+      <a href="#account-settings"><span>⚙</span> Settings</a>
+    </nav>
+    <div className="sidebar-help"><strong>Need help?</strong><span>Explore your tools and insights.</span></div>
+  </aside>
+  <div className="app-main-content">
 <InventoryNotifications />
 
       <div id="business-insights-section">
@@ -475,6 +483,8 @@ function App() {
         <span>Simple tools for smarter selling.</span>
         <span>© 2026 ProfitPilot</span>
       </footer>
+  </div>
+</div>
             </main>
       </SalesProvider>
     </ProductsProvider>
