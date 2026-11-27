@@ -298,7 +298,11 @@ function App() {
   <a href="#keyword-research-section">Keyword Research</a>
 </nav>
 
-<InventoryNotifications />\n\n      <div id="business-insights-section">\n        <BusinessInsights currency={currency} />\n      </div>
+<InventoryNotifications />
+
+      <div id="business-insights-section">
+        <BusinessInsights currency={currency} />
+      </div>
 
       <section className="platform-section">
         <div className="section-heading">
