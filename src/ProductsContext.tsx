@@ -323,7 +323,7 @@ export function ProductsProvider({
       }
       return updated
     })
-  }, [userId, storageKey])
+  }, [storageKey])
 
   return (
     <ProductsContext.Provider
@@ -342,6 +342,8 @@ deleteProduct,
   )
 }
 
+// This context hook is intentionally exported alongside its provider.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useProducts() {
   const context = useContext(ProductsContext)
 
