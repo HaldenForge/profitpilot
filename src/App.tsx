@@ -240,8 +240,8 @@ function App() {
   }
 
     return (
-    <ProductsProvider userId={session.user.id}>
-      <SalesProvider userId={session.user.id}>
+    <ProductsProvider key={session.user.id} userId={session.user.id}>
+      <SalesProvider key={session.user.id} userId={session.user.id}>
         <main className="app">
       <header className="topbar">
         <a className="brand" href="#">
