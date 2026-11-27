@@ -1,4 +1,5 @@
 
+import InsightPanel from './InsightPanel'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { supabase } from './lib/supabase'
@@ -178,6 +179,7 @@ export default function ProductHunter({
 
   return (
     <section className="product-hunter">
+      {response && <InsightPanel area="Product Hunter" level={response.provider_connected && response.results.length ? 'opportunity' : 'info'} title={response.provider_connected && response.results.length ? 'Discovery results are ready for review' : 'Live marketplace data is not connected'} explanation={response.provider_connected && response.results.length ? `${response.results.length} result(s) were returned for “${response.keyword}”. The results alone do not confirm demand or profitability.` : 'Product discovery cannot produce verified live listings until an approved data provider is connected.'} action={response.provider_connected && response.results.length ? 'Compare original listing prices, sellers and product condition, then enter verified supplier and fee costs in Product Research.' : 'You can continue using Product Research with manually verified information. Do not treat unavailable results as zero demand.'} evidence={`Data status: ${response.data_status.replace(/_/g,' ')}`} />}
       <div className="hunter-heading">
         <div>
           <span className="step-label">PRODUCT DISCOVERY</span>

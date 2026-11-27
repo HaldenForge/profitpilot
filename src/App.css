@@ -2127,3 +2127,23 @@ html {
     flex-direction: column;
   }
 }
+
+
+/* Professional ProfitPilot workspace navigation */
+.app{max-width:1600px;padding:0 28px}
+.app-workspace{display:grid;grid-template-columns:224px minmax(0,1fr);gap:28px;align-items:start}
+.app-sidebar{position:sticky;top:14px;align-self:start;min-height:calc(100vh - 28px);padding:18px 12px;display:flex;flex-direction:column;background:#fff;border:1px solid #e5eaf0;border-radius:16px;box-shadow:0 8px 28px rgba(25,50,80,.06)}
+.sidebar-brand-mark{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#3979dc,#625bd4);color:#fff;font-size:23px;font-weight:800;margin:2px 8px 22px}
+.sidebar-label{padding:0 10px 10px;color:#98a4b5;font-size:9px;font-weight:800;letter-spacing:1.4px}
+.dashboard-nav{display:flex;flex-direction:column;gap:4px}
+.dashboard-nav a{display:flex;align-items:center;gap:11px;padding:11px 10px;border-radius:9px;text-decoration:none;color:#617086;font-size:12px;font-weight:600;transition:background .18s,color .18s}
+.dashboard-nav a span{width:20px;text-align:center;color:#7889a1;font-size:17px}
+.dashboard-nav a:hover,.dashboard-nav a:focus-visible{background:#edf4ff;color:#2868c7;outline:none}
+.dashboard-nav a:hover span,.dashboard-nav a:focus-visible span{color:#2868c7}
+.sidebar-help{display:flex;flex-direction:column;gap:5px;margin-top:auto;padding:14px 11px;background:#f4f7fc;border:1px solid #e7edf5;border-radius:11px;color:#68788e;font-size:10px;line-height:1.5}
+.sidebar-help strong{color:#33445b;font-size:11px}
+.app-main-content{min-width:0}
+.app-main-content>.welcome{margin-top:24px}
+.app-main-content>.dashboard-nav{margin:0}
+@media(max-width:1050px){.app{padding:0 18px}.app-workspace{grid-template-columns:190px minmax(0,1fr);gap:18px}.app-sidebar{padding:14px 9px}.dashboard-nav a{font-size:11px;padding:10px 8px}}
+@media(max-width:760px){.app-workspace{grid-template-columns:1fr;gap:12px}.app-sidebar{position:static;min-height:0;padding:10px;border-radius:12px}.sidebar-brand-mark,.sidebar-label,.sidebar-help{display:none}.dashboard-nav{flex-direction:row;overflow-x:auto;padding:2px 0 5px;scrollbar-width:thin}.dashboard-nav a{flex:0 0 auto;white-space:nowrap;background:#f5f8fc}.app{padding:0 12px}.topbar{height:auto;min-height:68px;gap:10px}.top-right{flex-wrap:wrap;justify-content:flex-end}.app-main-content>.welcome{margin-top:14px}}

@@ -1,4 +1,5 @@
 
+import InsightPanel from './InsightPanel'
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 
@@ -141,6 +142,7 @@ export default function KeywordResearch() {
 
   return (
     <section className="keyword-research">
+      {!loading && keywords.length > 0 && (() => { const risingLow = keywords.filter(k => (k.trend_direction || '').toLowerCase() === 'rising' && (k.competition_level || '').toLowerCase() === 'low'); const measured = keywords.filter(k => k.search_volume !== null || k.competition_score !== null || (k.trend_direction && k.trend_direction !== 'unknown')); return <InsightPanel area="Keyword Research" level={risingLow.length ? 'opportunity' : 'info'} title={risingLow.length ? 'Potential keywords to validate' : 'Keyword evidence check'} explanation={risingLow.length ? `${risingLow.length} saved keyword(s) are marked rising with low competition.` : `${measured.length} of ${keywords.length} saved keyword(s) contain at least one research metric. No keyword currently meets both rising-trend and low-competition conditions.`} action="Validate these metrics with a trusted marketplace or keyword data provider before prioritising a listing. Customer-entered figures are not independently verified." evidence={risingLow.slice(0,5).map(k => k.keyword).join(' · ') || 'Missing metrics are not estimated or guessed.'} /> })()}
       <div className="keyword-heading">
         <h2>Keyword Research</h2>
         <p>

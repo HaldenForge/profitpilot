@@ -1,4 +1,5 @@
 
+import InsightPanel from './InsightPanel'
 import { useMemo, useState, type FormEvent } from 'react'
 import { useProducts } from './ProductsContext'
 import {
@@ -245,6 +246,7 @@ export default function SalesManager({ currency }: SalesManagerProps) {
 
   return (
     <section className="sales-manager" id="sales-manager">
+      {sales.length > 0 && (() => { const active = sales.filter(s => s.orderStatus !== 'Cancelled'); const total = active.reduce((sum,s) => sum + getProfit(s),0); const negative = active.filter(s => getProfit(s) < 0); return <InsightPanel area="Sales" level={negative.length ? 'warning' : 'positive'} title={negative.length ? 'Some active orders have negative estimated profit' : 'Recorded order margin check'} explanation={`${active.length} non-cancelled order(s) show ${money(total)} estimated profit in total. Cancelled orders are excluded.`} action="Review negative-margin orders and verify their product cost, shipping and fee assumptions. This is an estimate, not accounting profit." evidence={negative.slice(0,4).map(s => `${s.orderId}: ${money(getProfit(s))}`).join(' · ') || 'No negative estimated order margins found.'} /> })()}
       <div className="sales-heading">
         <div>
           <h2>Sales &amp; Order Tracking</h2>

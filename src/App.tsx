@@ -17,6 +17,8 @@ import InventoryNotifications from './InventoryNotifications'
 import ProductResearch from './ProductResearch'
 import KeywordResearch from './KeywordResearch'
 import ProductHunter from './ProductHunter'
+import BusinessInsights from './BusinessInsights'
+import InsightPanel from './InsightPanel'
 import type { ExchangeRates } from './lib/currency'
 const platforms = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
 const getDefaultCurrency = () => {
@@ -238,15 +240,15 @@ function App() {
   }
 
     return (
-    <ProductsProvider userId={session.user.id}>
-      <SalesProvider userId={session.user.id}>
+    <ProductsProvider key={session.user.id} userId={session.user.id}>
+      <SalesProvider key={session.user.id} userId={session.user.id}>
         <main className="app">
       <header className="topbar">
         <a className="brand" href="#">
           <span className="brand-icon">P</span>
           <span>Profit<span className="brand-light">Pilot</span></span>
         </a>
-        <div className="top-right">
+        <div className="top-right" id="account-settings">
           <span className="live-dot" /> Profit calculator
           <select aria-label="Currency" value={currency}
             onChange={e => setCurrency(e.target.value)}>
@@ -283,19 +285,32 @@ function App() {
         <div className="welcome-icon">↗</div>
       </section>
 
-<nav className="dashboard-nav">
-  <a href="#profit-calculator">Profit Calculator</a>
-  <a href="#pricing-section">Pricing Calculator</a>
-  <a href="#products-section">Products</a>
-  <a href="#inventory-section">Inventory</a>
-  <a href="#sales-section">Sales & Orders</a>
-  <a href="#analytics-section">Analytics</a>
-  <a href="#vat-section">VAT Calculator</a>
-  <a href="#research-section">Product Research</a>
-  <a href="#keyword-research-section">Keyword Research</a>
-</nav>
-
+<div className="app-workspace">
+  <aside className="app-sidebar" aria-label="Main navigation">
+    <div className="sidebar-brand-mark">P</div>
+    <span className="sidebar-label">WORKSPACE</span>
+    <nav className="dashboard-nav">
+      <a href="#business-insights-section"><span>▦</span> Overview</a>
+      <a href="#profit-calculator"><span>⌁</span> Profit Calculator</a>
+      <a href="#pricing-section"><span>◇</span> Smart Pricing</a>
+      <a href="#products-section"><span>▣</span> Products</a>
+      <a href="#inventory-section"><span>▤</span> Inventory</a>
+      <a href="#sales-section"><span>🛒</span> Orders & Sales</a>
+      <a href="#analytics-section"><span>▥</span> Analytics</a>
+      <a href="#product-hunter-section"><span>⌕</span> Product Hunter</a>
+      <a href="#research-section"><span>◎</span> Product Research</a>
+      <a href="#keyword-research-section"><span>⌗</span> Keyword Research</a>
+      <a href="#vat-section"><span>▧</span> VAT Calculator</a>
+      <a href="#account-settings"><span>⚙</span> Settings</a>
+    </nav>
+    <div className="sidebar-help"><strong>Need help?</strong><span>Explore your tools and insights.</span></div>
+  </aside>
+  <div className="app-main-content">
 <InventoryNotifications />
+
+      <div id="business-insights-section">
+        <BusinessInsights currency={currency} userId={session.user.id} />
+      </div>
 
       <section className="platform-section">
         <div className="section-heading">
@@ -383,6 +398,7 @@ function App() {
             </div>
           </div>
 
+          <InsightPanel area="Profit Calculator" level={result.profit < 0 ? 'warning' : result.margin < 10 ? 'opportunity' : 'positive'} title={result.profit < 0 ? 'This calculation currently shows a loss' : result.margin < 10 ? 'Your estimated margin is relatively tight' : 'Your entered figures show a positive margin'} explanation={`Estimated profit is ${money(result.profit)} (${result.margin.toFixed(2)}% margin) after the costs and fees entered.`} action={result.profit < 0 ? 'Review selling price, product cost, shipping, advertising and marketplace fees before listing.' : result.margin < 10 ? 'Test a higher selling price or negotiate costs, while checking competitor prices.' : 'Check actual marketplace fees and include any missing costs before relying on this estimate.'} evidence="This is a calculator result based only on the values entered here." />
           <div className="result-card breakdown">
             <h3>Cost breakdown</h3>
             <div className="break-row">
@@ -467,6 +483,8 @@ function App() {
         <span>Simple tools for smarter selling.</span>
         <span>© 2026 ProfitPilot</span>
       </footer>
+  </div>
+</div>
             </main>
       </SalesProvider>
     </ProductsProvider>
