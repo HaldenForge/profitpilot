@@ -219,8 +219,9 @@ export default function BusinessInsights({ currency, userId }: { currency: strin
               <div className="bi-panel-heading"><div><span>PRODUCT PERFORMANCE</span><h3>Top products by estimated profit</h3></div><small>{products.length} saved</small></div>
               {topProducts.length ? <div className="bi-top-products">{topProducts.map((product, index) => {
                 const profit = product.sellingPrice - product.productCost - product.shippingCost - product.sellingPrice * product.feePercent / 100
+                const productImage = researchProducts.find(item => item.product_name?.trim().toLowerCase() === product.name.trim().toLowerCase() && item.image_url)?.image_url
                 return <div className="bi-product-row" key={product.id}>
-                  <div className="bi-product-thumb" aria-hidden="true">{product.name.trim().charAt(0).toUpperCase()}</div>
+                  {productImage ? <img className="bi-product-thumb bi-product-photo" src={productImage} alt={product.name} loading="lazy" /> : <div className="bi-product-thumb" aria-hidden="true">{product.name.trim().charAt(0).toUpperCase()}</div>}
                   <div className="bi-product-details"><strong>{product.name}</strong><span>{product.marketplace} · {product.stockQuantity} in stock</span></div>
                   <div className="bi-product-profit"><strong className={profit < 0 ? "bi-negative" : ""}>{money(profit)}</strong><span>per item</span></div>
                   <small className="bi-product-rank">#{index + 1}</small>
