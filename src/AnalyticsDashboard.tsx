@@ -83,8 +83,8 @@ export default function AnalyticsDashboard({
   )
 
   return (
-    <section className="analytics-dashboard"
-      {!loading && !error && products.length > 0 && <InsightPanel area="Analytics" level={analytics.profit < 0 ? 'warning' : 'info'} title={analytics.profit < 0 ? 'Your saved product portfolio has negative estimated profit' : 'Portfolio estimate, not confirmed sales'} explanation={`${products.length} saved product(s) show ${money(analytics.profit)} estimated profit and a ${analytics.margin.toFixed(1)}% estimated margin based on listed prices.`} action="Use Sales & Orders for order-based performance. Review the products with the weakest margins before investing in stock." evidence="These figures use saved product listings, not completed transactions." />}>
+    <section className="analytics-dashboard">
+      {!loading && !error && products.length > 0 && <InsightPanel area="Analytics" level={analytics.profit < 0 ? 'warning' : 'info'} title={analytics.profit < 0 ? 'Your saved product portfolio has negative estimated profit' : 'Portfolio estimate, not confirmed sales'} explanation={`${products.length} saved product(s) show ${money(analytics.profit)} estimated profit and a ${analytics.margin.toFixed(1)}% estimated margin based on listed prices.`} action="Use Sales & Orders for order-based performance. Review the products with the weakest margins before investing in stock." evidence="These figures use saved product listings, not completed transactions." />}
       <div className="analytics-heading">
         <div>
           <h2>Business Analytics Dashboard</h2>
