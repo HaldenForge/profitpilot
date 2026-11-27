@@ -1,3 +1,4 @@
+import InsightPanel from './InsightPanel'
 import { useMemo, useState, type FormEvent } from 'react'
 import { useProducts, type Product } from './ProductsContext'
 
@@ -145,7 +146,8 @@ setLowStockThreshold(String(product.lowStockThreshold))
   )
 
   return (
-    <section className="product-manager">
+    <section className="product-manager"
+      {products.length > 0 && (() => { const loss = products.filter(p => profit(p) < 0); const best = [...products].sort((a,b) => profit(b)-profit(a))[0]; return <InsightPanel area="Products" level={loss.length ? 'warning' : 'opportunity'} title={loss.length ? 'Review products with negative estimated profit' : 'Review your highest-margin product'} explanation={loss.length ? `${loss.length} saved product(s) have negative estimated profit using their current saved costs and fees.` : `${best.name} currently has the highest estimated per-item profit in your product list.`} action="Check supplier cost, shipping, fee assumptions and selling price before changing a listing." evidence={loss.length ? loss.slice(0,3).map(p => `${p.name}: ${money(profit(p))}`).join(' · ') : `${best.name}: ${money(profit(best))} estimated per item`} /> })()}>
       <div className="section-heading">
         <div>
           <h2>Product Management</h2>
