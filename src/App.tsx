@@ -248,7 +248,7 @@ function App() {
           <span className="brand-icon">P</span>
           <span>Profit<span className="brand-light">Pilot</span></span>
         </a>
-        <div className="top-right" id="account-settings">
+        <div className="top-right">
           <span className="live-dot" /> Profit calculator
           <select aria-label="Currency" value={currency}
             onChange={e => setCurrency(e.target.value)}>
@@ -301,7 +301,6 @@ function App() {
       <a href="#research-section"><span>◎</span> Product Research</a>
       <a href="#keyword-research-section"><span>⌗</span> Keyword Research</a>
       <a href="#vat-section"><span>▧</span> VAT Calculator</a>
-      <a href="#account-settings"><span>⚙</span> Settings</a>
     </nav>
     <div className="sidebar-help"><strong>Need help?</strong><span>Explore your tools and insights.</span></div>
   </aside>
