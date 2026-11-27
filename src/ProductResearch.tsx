@@ -74,7 +74,24 @@ export default function ProductResearch({ currency }: { currency: string }) {
   }
 
   useEffect(() => {
-    void loadProducts()
+    let isActive = true
+
+    void supabase
+      .from('product_research')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data, error: loadError }) => {
+        if (!isActive) return
+
+        if (loadError) setError(loadError.message)
+        else setProducts((data ?? []) as ResearchProduct[])
+
+        setLoading(false)
+      })
+
+    return () => {
+      isActive = false
+    }
   }, [])
 
   async function saveProduct(event: FormEvent<HTMLFormElement>) {
