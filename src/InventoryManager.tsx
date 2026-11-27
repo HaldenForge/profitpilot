@@ -54,7 +54,6 @@ export default function InventoryManager({
       setHistoryLoading(false)
     }
 
-    setHistoryLoading(true)
     void loadMovementHistory()
 
     window.addEventListener(
