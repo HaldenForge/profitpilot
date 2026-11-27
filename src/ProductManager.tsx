@@ -1,6 +1,7 @@
 import InsightPanel from './InsightPanel'
 import { useMemo, useState, type FormEvent } from 'react'
 import { useProducts, type Product } from './ProductsContext'
+import { validateProductInput } from './lib/inputValidation'
 
 const marketplaces = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
 
@@ -68,31 +69,22 @@ setLowStockThreshold('5')
   async function saveProduct(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const values = [
-      Number(productCost),
-      Number(sellingPrice),
-      Number(shippingCost),
-      Number(feePercent),
-    ]
-
-    if (
-      !name.trim() ||
-      values.some((value) => !Number.isFinite(value) || value < 0)
-    ) {
-      alert('Please enter a product name and valid non-negative numbers.')
-      return
+    const product = {
+      name: name.trim(),
+      marketplace,
+      productCost: Number(productCost),
+      sellingPrice: Number(sellingPrice),
+      shippingCost: Number(shippingCost),
+      feePercent: Number(feePercent),
+      stockQuantity: Number(stockQuantity),
+      lowStockThreshold: Number(lowStockThreshold),
     }
 
-    const product = {
-  name: name.trim(),
-  marketplace,
-  productCost: values[0],
-  sellingPrice: values[1],
-  shippingCost: values[2],
-  feePercent: values[3],
-  stockQuantity: Number(stockQuantity),
-  lowStockThreshold: Number(lowStockThreshold),
-}
+    const validationError = validateProductInput(product)
+    if (validationError) {
+      alert(validationError)
+      return
+    }
 
     setSaving(true)
 
@@ -231,6 +223,7 @@ setLowStockThreshold(String(product.lowStockThreshold))
             <input
               type="number"
               min="0"
+              max="100"
               step="0.01"
               value={feePercent}
               onChange={(event) => setFeePercent(event.target.value)}
