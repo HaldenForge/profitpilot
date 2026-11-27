@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { supabase } from './lib/supabase'
+import { validateSaleInput } from './lib/inputValidation'
 
 export type SaleStatus =
   | 'Pending'
@@ -138,9 +139,10 @@ export function SalesProvider({
 
   const addSale = useCallback(async (sale: SaleInput) => {
     setError('')
-
-    if (!sale.productId) {
-      throw new Error('Please select a product.')
+    const validationError = validateSaleInput(sale)
+    if (validationError) {
+      setError(validationError)
+      throw new Error(validationError)
     }
 
     const { data, error: insertError } = await supabase.rpc(
@@ -183,9 +185,10 @@ export function SalesProvider({
     sale: SaleInput
   ) => {
     setError('')
-
-    if (!sale.productId) {
-      throw new Error('Please select a product.')
+    const validationError = validateSaleInput(sale)
+    if (validationError) {
+      setError(validationError)
+      throw new Error(validationError)
     }
 
     const { data, error: updateError } = await supabase.rpc(
