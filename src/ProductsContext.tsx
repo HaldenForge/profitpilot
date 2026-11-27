@@ -50,7 +50,7 @@ type ProductsContextType = {
   deleteProduct: (id: string) => Promise<void>
 }
 
-const STORAGE_KEY = 'profitpilot-products'
+const LEGACY_STORAGE_KEY = 'profitpilot-products'
 
 const ProductsContext = createContext<ProductsContextType | undefined>(
   undefined
@@ -70,47 +70,6 @@ function fromDatabase(item: DatabaseProduct): Product {
   }
 }
 
-type LegacyProduct = {
-  id: string
-  name: string
-  marketplace: string
-  productCost: number
-  sellingPrice: number
-  shippingCost: number
-  feePercent: number
-  stockQuantity?: number
-  lowStockThreshold?: number
-}
-
-function readLegacyProducts(): Product[] {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (!saved) return []
-
-    const parsed: unknown = JSON.parse(saved)
-    if (!Array.isArray(parsed)) return []
-
-    return parsed.filter((item): item is LegacyProduct =>
-      item !== null &&
-      typeof item === 'object' &&
-      typeof item.id === 'string' &&
-      typeof item.name === 'string' &&
-      typeof item.marketplace === 'string' &&
-      Number.isFinite(item.productCost) &&
-      Number.isFinite(item.sellingPrice) &&
-      Number.isFinite(item.shippingCost) &&
-      Number.isFinite(item.feePercent) &&
-      (item.stockQuantity === undefined || Number.isFinite(item.stockQuantity)) &&
-      (item.lowStockThreshold === undefined || Number.isFinite(item.lowStockThreshold))
-    ).map((item) => ({
-      ...item,
-      stockQuantity: item.stockQuantity ?? 0,
-      lowStockThreshold: item.lowStockThreshold ?? 5,
-    }))
-  } catch {
-    return []
-  }
-}
 
 export function ProductsProvider({
   userId,
@@ -120,13 +79,19 @@ export function ProductsProvider({
   children: ReactNode
 }) {
   const [products, setProducts] = useState<Product[]>([])
+  const storageKey = `profitpilot-products-${userId}`
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // The old shared key is deliberately never read or imported: it has no reliable account owner.
+  // It is left untouched so existing browser data is not silently destroyed.
+  void LEGACY_STORAGE_KEY
 
   useEffect(() => {
     let active = true
 
     async function loadProducts() {
+      setProducts([])
       setLoading(true)
       setError('')
 
@@ -139,41 +104,14 @@ export function ProductsProvider({
 
         if (fetchError) throw fetchError
 
-        let databaseProducts = (data ?? []) as DatabaseProduct[]
-
-        if (databaseProducts.length === 0) {
-          const legacyProducts = readLegacyProducts()
-
-          if (legacyProducts.length > 0) {
-            const rows = legacyProducts.map((product) => ({
-              user_id: userId,
-              name: product.name,
-              marketplace: product.marketplace,
-              product_cost: product.productCost,
-              selling_price: product.sellingPrice,
-              shipping_cost: product.shippingCost,
-              fee_percent: product.feePercent,
-              stock_quantity: product.stockQuantity,
-              low_stock_threshold: product.lowStockThreshold,
-            }))
-
-            const { data: imported, error: importError } = await supabase
-              .from('products')
-              .insert(rows)
-              .select('*')
-
-            if (importError) throw importError
-
-            databaseProducts = (imported ?? []) as DatabaseProduct[]
-          }
-        }
+        const databaseProducts = (data ?? []) as DatabaseProduct[]
 
         if (active) {
           const mapped = databaseProducts.map(fromDatabase)
           setProducts(mapped)
 
           try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped))
+            localStorage.setItem(storageKey, JSON.stringify(mapped))
           } catch {
             // Cloud data remains available if browser storage is unavailable.
           }
@@ -196,7 +134,7 @@ export function ProductsProvider({
     return () => {
       active = false
     }
-  }, [userId])
+  }, [userId, storageKey])
 
   useEffect(() => {
     async function refreshProducts() {
@@ -212,7 +150,7 @@ export function ProductsProvider({
       setProducts(mapped)
 
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped))
+        localStorage.setItem(storageKey, JSON.stringify(mapped))
       } catch {
         // Cloud data remains available.
       }
@@ -229,7 +167,7 @@ export function ProductsProvider({
         refreshProducts
       )
     }
-  }, [userId])
+  }, [userId, storageKey])
 
   const addProduct = useCallback(async (product: ProductInput) => {
     setError('')
@@ -259,13 +197,13 @@ export function ProductsProvider({
     setProducts((current) => {
       const updated = [saved, ...current]
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        localStorage.setItem(storageKey, JSON.stringify(updated))
       } catch {
         // Cloud save has already succeeded.
       }
       return updated
     })
-  }, [userId])
+  }, [userId, storageKey])
 
   const updateProduct = useCallback(async (
     id: string,
@@ -302,13 +240,13 @@ export function ProductsProvider({
         item.id === id ? updatedProduct : item
       )
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        localStorage.setItem(storageKey, JSON.stringify(updated))
       } catch {
         // Cloud save has already succeeded.
       }
       return updated
     })
-  }, [userId])
+  }, [userId, storageKey])
 
       const recordStockMovement = useCallback(async (
     id: string,
@@ -343,7 +281,7 @@ export function ProductsProvider({
       )
 
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        localStorage.setItem(storageKey, JSON.stringify(updated))
       } catch {
         // Cloud data remains available.
       }
@@ -352,7 +290,7 @@ export function ProductsProvider({
     })
 
     return newStockQuantity
-  }, [])
+  }, [storageKey])
 
   const deleteProduct = useCallback(async (id: string) => {
     setError('')
@@ -372,13 +310,13 @@ export function ProductsProvider({
     setProducts((current) => {
       const updated = current.filter((item) => item.id !== id)
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        localStorage.setItem(storageKey, JSON.stringify(updated))
       } catch {
         // Cloud delete has already succeeded.
       }
       return updated
     })
-  }, [userId])
+  }, [userId, storageKey])
 
   return (
     <ProductsContext.Provider
