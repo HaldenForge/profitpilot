@@ -1,4 +1,5 @@
 
+import InsightPanel from './InsightPanel'
 import { useEffect, useMemo, useState } from 'react'
 import { useProducts } from './ProductsContext'
 import { supabase } from './lib/supabase'
@@ -147,7 +148,8 @@ export default function InventoryManager({
   }
 
   return (
-    <section className="product-manager inventory-manager">
+    <section className="product-manager inventory-manager"
+      {products.length > 0 && <InsightPanel area="Inventory" level={restockProducts.length ? 'warning' : 'positive'} title={restockProducts.length ? 'Stock needs attention' : 'Stock levels are above saved thresholds'} explanation={restockProducts.length ? `${outOfStockProducts.length} product(s) are out of stock and ${lowStockProducts.length} are at or below their low-stock threshold.` : 'No saved product is currently at or below its low-stock threshold.'} action={restockProducts.length ? 'Review supplier lead times and plan replenishment. Record stock-in only when stock has actually arrived.' : 'Keep monitoring stock movements and review thresholds when demand changes.'} evidence={restockProducts.slice(0,4).map(p => `${p.name}: ${p.stockQuantity} left`).join(' · ') || `${totalUnits} total units recorded`} />}>
       <div className="section-heading">
         <div>
           <h2>Inventory Management</h2>
