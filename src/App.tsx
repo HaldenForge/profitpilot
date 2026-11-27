@@ -18,6 +18,7 @@ import ProductResearch from './ProductResearch'
 import KeywordResearch from './KeywordResearch'
 import ProductHunter from './ProductHunter'
 import BusinessInsights from './BusinessInsights'
+import InsightPanel from './InsightPanel'
 import type { ExchangeRates } from './lib/currency'
 const platforms = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
 const getDefaultCurrency = () => {
@@ -284,7 +285,8 @@ function App() {
         <div className="welcome-icon">↗</div>
       </section>
 
-<nav className="dashboard-nav">\n  <a href="#business-insights-section">Business Insights</a>
+<nav className="dashboard-nav">
+  <a href="#business-insights-section">Business Insights</a>
   <a href="#profit-calculator">Profit Calculator</a>
   <a href="#pricing-section">Pricing Calculator</a>
   <a href="#products-section">Products</a>
@@ -384,6 +386,7 @@ function App() {
             </div>
           </div>
 
+          <InsightPanel area="Profit Calculator" level={result.profit < 0 ? 'warning' : result.margin < 10 ? 'opportunity' : 'positive'} title={result.profit < 0 ? 'This calculation currently shows a loss' : result.margin < 10 ? 'Your estimated margin is relatively tight' : 'Your entered figures show a positive margin'} explanation={`Estimated profit is ${money(result.profit)} (${result.margin.toFixed(2)}% margin) after the costs and fees entered.`} action={result.profit < 0 ? 'Review selling price, product cost, shipping, advertising and marketplace fees before listing.' : result.margin < 10 ? 'Test a higher selling price or negotiate costs, while checking competitor prices.' : 'Check actual marketplace fees and include any missing costs before relying on this estimate.'} evidence="This is a calculator result based only on the values entered here." />
           <div className="result-card breakdown">
             <h3>Cost breakdown</h3>
             <div className="break-row">
