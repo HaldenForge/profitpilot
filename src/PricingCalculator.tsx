@@ -64,8 +64,8 @@ export default function PricingCalculator({ currency }: Props) {
   ]
 
   return (
-    <section className="pricing-tool card"
-      {result.valid && <InsightPanel area="Smart Pricing" level="opportunity" title="Your target price is ready" explanation={`The break-even price is ${money(result.breakEven)} and your target price is ${money(result.target)} per item.`} action="Use the target price as a starting point, then compare competitor listings and confirm the marketplace's current fees." evidence="Calculated from the costs and fee percentages entered above." />}>
+    <section className="pricing-tool card">
+      {result.valid && <InsightPanel area="Smart Pricing" level="opportunity" title="Your target price is ready" explanation={`The break-even price is ${money(result.breakEven)} and your target price is ${money(result.target)} per item.`} action="Use the target price as a starting point, then compare competitor listings and confirm the marketplace's current fees." evidence="Calculated from the costs and fee percentages entered above." />}
       <div className="pricing-heading">
         <span className="step-label">SMART PRICING TOOL</span>
         <h2>Find your ideal selling price</h2>
