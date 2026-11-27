@@ -49,8 +49,6 @@ export default function KeywordResearch() {
   const [error, setError] = useState('')
 
   async function loadKeywords() {
-    setLoading(true)
-    setError('')
 
     const { data, error } = await supabase
       .from('keyword_research')
