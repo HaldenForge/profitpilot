@@ -1,4 +1,5 @@
 
+import InsightPanel from './InsightPanel'
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { supabase } from './lib/supabase'
@@ -175,7 +176,8 @@ export default function ProductResearch({ currency }: { currency: string }) {
   )
 
   return (
-    <section className="product-research">
+    <section className="product-research"
+      {!loading && products.length > 0 && (() => { const ready = products.filter(p => p.estimated_profit !== null); const best = [...ready].sort((a,b) => Number(b.estimated_profit)-Number(a.estimated_profit))[0]; return best ? <InsightPanel area="Product Research" level={Number(best.estimated_profit) > 0 ? 'opportunity' : 'warning'} title="Strongest saved research estimate" explanation={`${best.product_name} has the highest saved estimated profit among ${ready.length} products with a profit estimate.`} action="Validate supplier quotes, shipping, marketplace fees and real demand before buying stock." evidence={`${best.marketplace} · ${money(Number(best.estimated_profit))} estimated · ${best.data_status.replace(/_/g,' ')} data`} /> : <InsightPanel area="Product Research" title="Add cost and price details" explanation="Your saved research does not yet include enough profit estimates to compare candidates." action="Enter selling price, product cost, shipping and marketplace fee for each candidate. Keep unverified information labelled." /> })()}>
       <div className="research-heading">
         <div>
           <h2>Product Research &amp; Product Hunter</h2>
