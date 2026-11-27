@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { supabase } from './lib/supabase'
+import { validateProductInput } from './lib/inputValidation'
 
 export type Product = {
   id: string
@@ -167,6 +168,11 @@ export function ProductsProvider({
 
   const addProduct = useCallback(async (product: ProductInput) => {
     setError('')
+    const validationError = validateProductInput(product)
+    if (validationError) {
+      setError(validationError)
+      throw new Error(validationError)
+    }
 
     const { data, error: insertError } = await supabase
       .from('products')
@@ -206,6 +212,11 @@ export function ProductsProvider({
     product: ProductInput
   ) => {
     setError('')
+    const validationError = validateProductInput(product)
+    if (validationError) {
+      setError(validationError)
+      throw new Error(validationError)
+    }
 
     const { data, error: updateError } = await supabase
       .from('products')
