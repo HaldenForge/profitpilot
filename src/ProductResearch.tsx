@@ -61,8 +61,6 @@ export default function ProductResearch({ currency }: { currency: string }) {
   }, [sellingPrice, productCost, shippingCost, feePercent])
 
   async function loadProducts() {
-    setLoading(true)
-    setError('')
 
     const { data, error: loadError } = await supabase
       .from('product_research')
