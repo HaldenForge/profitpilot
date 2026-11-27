@@ -50,8 +50,6 @@ type ProductsContextType = {
   deleteProduct: (id: string) => Promise<void>
 }
 
-const LEGACY_STORAGE_KEY = 'profitpilot-products'
-
 const ProductsContext = createContext<ProductsContextType | undefined>(
   undefined
 )
@@ -83,10 +81,8 @@ export function ProductsProvider({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  // The old shared key is deliberately never read or imported: it has no reliable account owner.
-  // It is left untouched so existing browser data is not silently destroyed.
-  void LEGACY_STORAGE_KEY
-
+  // Never import from the old shared browser key: it has no reliable account owner.
+  // The old key is left untouched so legacy data is not silently destroyed.
   useEffect(() => {
     let active = true
 
