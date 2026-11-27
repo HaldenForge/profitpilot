@@ -6,6 +6,8 @@ import { buildBusinessInsights, type BusinessInsight, type KeywordInsightInput, 
 import './BusinessInsights.css'
 
 type ResearchRow = ResearchProductInsightInput & {
+  image_url?: string | null
+  product_name?: string
   demand_score?: number | null
   competition_score?: number | null
   opportunity_score?: number | null
@@ -70,7 +72,7 @@ export default function BusinessInsights({ currency, userId }: { currency: strin
       setKeywords([])
       const [productResult, keywordResult] = await Promise.all([
         supabase.from('product_research')
-          .select('product_name, marketplace, estimated_profit, estimated_profit_margin, data_status, demand_score, competition_score, opportunity_score')
+          .select('product_name, marketplace, image_url, estimated_profit, estimated_profit_margin, data_status, demand_score, competition_score, opportunity_score')
           .eq('user_id', userId),
         supabase.from('keyword_research')
           .select('keyword, marketplace, search_volume, competition_level, competition_score, trend_direction, data_status')
@@ -153,6 +155,8 @@ export default function BusinessInsights({ currency, userId }: { currency: strin
   const hasAnyData = products.length > 0 || sales.length > 0 || researchProducts.length > 0 || keywords.length > 0
   const trendValues = trend.map(item => item.revenue)
   const maxChannel = Math.max(1, ...channels.map(item => item.revenue))
+  const topProducts = [...products].sort((left, right) => (right.sellingPrice - right.productCost - right.shippingCost - right.sellingPrice * right.feePercent / 100) - (left.sellingPrice - left.productCost - left.shippingCost - left.sellingPrice * left.feePercent / 100)).slice(0, 5)
+  const topResearch = [...researchProducts].sort((left, right) => Number(right.opportunity_score ?? -1) - Number(left.opportunity_score ?? -1)).slice(0, 4)
   const stockTotal = stock.out + stock.low + stock.healthy
   const qualityValues = [researchQuality.verified, researchQuality.estimated, researchQuality.entered, researchQuality.unavailable]
 
@@ -171,10 +175,10 @@ export default function BusinessInsights({ currency, userId }: { currency: strin
       {loading ? <div className="bi-loading">Loading your saved business data and preparing your dashboard…</div> : (
         <>
           <div className="bi-kpis">
-            <article><span>Products tracked</span><strong>{products.length}</strong><small>Saved in your account</small></article>
-            <article><span>Active orders</span><strong>{activeSales.length}</strong><small>Cancelled orders excluded</small></article>
-            <article><span>Order revenue</span><strong>{activeSales.length ? money(salesMetrics.revenue) : '—'}</strong><small>{activeSales.length ? 'Recorded order value' : 'No saved orders yet'}</small></article>
-            <article><span>Estimated order profit</span><strong className={salesMetrics.profit < 0 ? 'bi-negative' : ''}>{activeSales.length ? money(salesMetrics.profit) : '—'}</strong><small>{activeSales.length ? `${salesMetrics.margin.toFixed(1)}% estimated margin` : 'Add orders to calculate'}</small></article>
+            <article><span><i className="bi-kpi-icon bi-icon-products">▣</i>Products tracked</span><strong>{products.length}</strong><small>Saved in your account</small></article>
+            <article><span><i className="bi-kpi-icon bi-icon-orders">🛒</i>Active orders</span><strong>{activeSales.length}</strong><small>Cancelled orders excluded</small></article>
+            <article><span><i className="bi-kpi-icon bi-icon-revenue">↗</i>Order revenue</span><strong>{activeSales.length ? money(salesMetrics.revenue) : '—'}</strong><small>{activeSales.length ? 'Recorded order value' : 'No saved orders yet'}</small></article>
+            <article><span><i className="bi-kpi-icon bi-icon-profit">◎</i>Estimated order profit</span><strong className={salesMetrics.profit < 0 ? 'bi-negative' : ''}>{activeSales.length ? money(salesMetrics.profit) : '—'}</strong><small>{activeSales.length ? `${salesMetrics.margin.toFixed(1)}% estimated margin` : 'Add orders to calculate'}</small></article>
           </div>
 
           {!hasAnyData && (
@@ -192,7 +196,7 @@ export default function BusinessInsights({ currency, userId }: { currency: strin
                   <div className="bi-chart-total">{money(salesMetrics.revenue)} <small>total recorded revenue</small></div>
                   <svg className="bi-line-chart" viewBox="0 0 640 190" role="img" aria-label="Recorded monthly order revenue trend">
                     {[35, 85, 135, 185].map(y => <line key={y} x1="0" x2="640" y1={y} y2={y} className="bi-gridline" />)}
-                    <path d={trendPath(trendValues, 620, 150)} transform="translate(10 15)" className="bi-trend-area" />
+                    <path d={trendPath(trendValues, 620, 150) + " L 620 150 L 0 150 Z"} transform="translate(10 15)" className="bi-trend-area" />
                     <path d={trendPath(trendValues, 620, 150)} transform="translate(10 15)" className="bi-trend-line" />
                   </svg>
                   <div className="bi-month-labels">{trend.map(item => <span key={item.key}>{item.label}</span>)}</div>
@@ -209,6 +213,28 @@ export default function BusinessInsights({ currency, userId }: { currency: strin
               </div>
               <div className="bi-ring-legend"><span><i className="bi-dot bi-gold" /> Estimated order profit</span><strong>{activeSales.length ? money(salesMetrics.profit) : 'No order data'}</strong></div>
               <p className="bi-note">Calculated from recorded selling prices, product costs, shipping and marketplace fees.</p>
+            </article>
+
+            <article className="bi-panel bi-products-panel">
+              <div className="bi-panel-heading"><div><span>PRODUCT PERFORMANCE</span><h3>Top products by estimated profit</h3></div><small>{products.length} saved</small></div>
+              {topProducts.length ? <div className="bi-top-products">{topProducts.map((product, index) => {
+                const profit = product.sellingPrice - product.productCost - product.shippingCost - product.sellingPrice * product.feePercent / 100
+                return <div className="bi-product-row" key={product.id}>
+                  <div className="bi-product-thumb" aria-hidden="true">{product.name.trim().charAt(0).toUpperCase()}</div>
+                  <div className="bi-product-details"><strong>{product.name}</strong><span>{product.marketplace} · {product.stockQuantity} in stock</span></div>
+                  <div className="bi-product-profit"><strong className={profit < 0 ? "bi-negative" : ""}>{money(profit)}</strong><span>per item</span></div>
+                  <small className="bi-product-rank">#{index + 1}</small>
+                </div>
+              })}</div> : <div className="bi-chart-empty">Add saved products to see your strongest estimated margins.</div>}
+            </article>
+
+            <article className="bi-panel bi-research-products-panel">
+              <div className="bi-panel-heading"><div><span>PRODUCT DISCOVERY</span><h3>Research shortlist</h3></div><small>{researchProducts.length} researched</small></div>
+              {topResearch.length ? <div className="bi-research-product-list">{topResearch.map((item, index) => <div className="bi-research-product" key={(item.product_name ?? "research") + "-" + item.marketplace + "-" + index}>
+                {item.image_url ? <img src={item.image_url} alt={item.product_name ?? "Researched product"} loading="lazy" /> : <div className="bi-research-placeholder">⌕</div>}
+                <div><strong>{item.product_name ?? "Saved research product"}</strong><span>{item.marketplace} · {item.data_status?.replace("_", " ") ?? "status unavailable"}</span></div>
+                <b>{item.opportunity_score == null ? "—" : Number(item.opportunity_score).toFixed(0) + "/100"}</b>
+              </div>)}</div> : <div className="bi-chart-empty">Save product opportunities in Product Research to see your shortlist here.</div>}
             </article>
 
             <article className="bi-panel">
