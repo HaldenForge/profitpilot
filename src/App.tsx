@@ -1,25 +1,27 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import './App.css'
 import { supabase } from './lib/supabase'
-import Auth from './Auth'
-import LandingPage from './LandingPage'
-import LegalPage from './LegalPage'
-import PricingCalculator from './PricingCalculator'
-import ProductManager from './ProductManager'
-import AnalyticsDashboard from './AnalyticsDashboard'
-import VATCalculator from './VATCalculator'
 import { ProductsProvider } from './ProductsContext'
 import { SalesProvider } from './SalesContext'
-import SalesManager from './SalesManager'
-import InventoryManager from './InventoryManager'
 import InventoryNotifications from './InventoryNotifications'
-import ProductResearch from './ProductResearch'
-import KeywordResearch from './KeywordResearch'
-import ProductHunter from './ProductHunter'
 import BusinessInsights from './BusinessInsights'
 import InsightPanel from './InsightPanel'
+import DeferredSection from './DeferredSection'
 import type { ExchangeRates } from './lib/currency'
+
+const Auth = lazy(() => import('./Auth'))
+const LandingPage = lazy(() => import('./LandingPage'))
+const LegalPage = lazy(() => import('./LegalPage'))
+const PricingCalculator = lazy(() => import('./PricingCalculator'))
+const ProductManager = lazy(() => import('./ProductManager'))
+const AnalyticsDashboard = lazy(() => import('./AnalyticsDashboard'))
+const VATCalculator = lazy(() => import('./VATCalculator'))
+const SalesManager = lazy(() => import('./SalesManager'))
+const InventoryManager = lazy(() => import('./InventoryManager'))
+const ProductResearch = lazy(() => import('./ProductResearch'))
+const KeywordResearch = lazy(() => import('./KeywordResearch'))
+const ProductHunter = lazy(() => import('./ProductHunter'))
 const platforms = ['Amazon FBA', 'Amazon FBM', 'eBay', 'Etsy', 'Shopify']
 const getDefaultCurrency = () => {
   const savedCurrency = localStorage.getItem('profitpilot-currency')
@@ -102,8 +104,10 @@ function App() {
     localStorage.setItem('profitpilot-currency', currency)
   }, [currency])
 
+  const userId = session?.user.id
+
   useEffect(() => {
-    if (!session) return
+    if (!userId) return
 
     let active = true
 
@@ -133,7 +137,7 @@ function App() {
     return () => {
       active = false
     }
-  }, [session?.user.id])
+  }, [userId])
 
   const update = (key: keyof Values, value: string) => {
     setValues(current => ({ ...current, [key]: value }))
@@ -143,16 +147,19 @@ function App() {
     Math.max(0, Number(values[key]) || 0)
 
   const result = useMemo(() => {
-    const quantity = Math.max(1, number('quantity'))
-    const revenue = number('price') * quantity
-    const productCost = number('product') * quantity
-    const shipping = number('shipping') * quantity
-    const fulfilment = number('fulfilment') * quantity
-    const marketplace = revenue * number('marketplaceFee') / 100
-    const payment = revenue * number('paymentFee') / 100
-    const fixed = number('fixedFee') * quantity
-    const advertising = number('advertising') * quantity
-    const other = number('other') * quantity
+    const valueAsNumber = (key: keyof Values) =>
+      Math.max(0, Number(values[key]) || 0)
+
+    const quantity = Math.max(1, valueAsNumber('quantity'))
+    const revenue = valueAsNumber('price') * quantity
+    const productCost = valueAsNumber('product') * quantity
+    const shipping = valueAsNumber('shipping') * quantity
+    const fulfilment = valueAsNumber('fulfilment') * quantity
+    const marketplace = revenue * valueAsNumber('marketplaceFee') / 100
+    const payment = revenue * valueAsNumber('paymentFee') / 100
+    const fixed = valueAsNumber('fixedFee') * quantity
+    const advertising = valueAsNumber('advertising') * quantity
+    const other = valueAsNumber('other') * quantity
 
     const totalCosts = productCost + shipping + fulfilment +
       marketplace + payment + fixed + advertising + other
@@ -212,30 +219,36 @@ function App() {
   if (!session) {
     if (publicView === 'privacy' || publicView === 'terms') {
       return (
-        <LegalPage
-          page={publicView}
-          onBack={() => setPublicView('home')}
-        />
+        <Suspense fallback={<main className="auth-page"><p>Loading page...</p></main>}>
+          <LegalPage
+            page={publicView}
+            onBack={() => setPublicView('home')}
+          />
+        </Suspense>
       )
     }
 
     if (publicView === 'home') {
       return (
-        <LandingPage
-          onLogin={() => setPublicView('login')}
-          onSignup={() => setPublicView('signup')}
-          onPrivacy={() => setPublicView('privacy')}
-          onTerms={() => setPublicView('terms')}
-        />
+        <Suspense fallback={<main className="auth-page"><p>Loading ProfitPilot...</p></main>}>
+          <LandingPage
+            onLogin={() => setPublicView('login')}
+            onSignup={() => setPublicView('signup')}
+            onPrivacy={() => setPublicView('privacy')}
+            onTerms={() => setPublicView('terms')}
+          />
+        </Suspense>
       )
     }
 
     return (
-      <Auth
-        key={publicView}
-        initialMode={publicView}
-        onBack={() => setPublicView('home')}
-      />
+      <Suspense fallback={<main className="auth-page"><p>Loading sign-in...</p></main>}>
+        <Auth
+          key={publicView}
+          initialMode={publicView}
+          onBack={() => setPublicView('home')}
+        />
+      </Suspense>
     )
   }
 
@@ -450,32 +463,32 @@ function App() {
       </div>
 
       <div id="pricing-section">
-  <PricingCalculator currency={currency} />
+  <DeferredSection><PricingCalculator currency={currency} /></DeferredSection>
 </div>
 
       <div id="products-section">
-  <ProductManager currency={currency} />
+  <DeferredSection><ProductManager currency={currency} /></DeferredSection>
 </div>
       <div id="inventory-section">
-  <InventoryManager currency={currency} />
+  <DeferredSection><InventoryManager currency={currency} /></DeferredSection>
 </div>
       <div id="analytics-section">
-  <AnalyticsDashboard currency={currency} />
+  <DeferredSection><AnalyticsDashboard currency={currency} /></DeferredSection>
 </div>
       <div id="sales-section">
-  <SalesManager currency={currency} />
+  <DeferredSection><SalesManager currency={currency} /></DeferredSection>
 </div>
 
       <div id="vat-section">
-  <VATCalculator currency={currency} />
+  <DeferredSection><VATCalculator currency={currency} /></DeferredSection>
 </div>
       <div id="product-hunter-section">
-  <ProductHunter currency={currency} exchangeRates={exchangeRates} />
+  <DeferredSection><ProductHunter currency={currency} exchangeRates={exchangeRates} /></DeferredSection>
 </div><div id="research-section">
-        <ProductResearch currency={currency} />
+        <DeferredSection><ProductResearch currency={currency} /></DeferredSection>
       </div>
             <div id="keyword-research-section">
-        <KeywordResearch />
+        <DeferredSection><KeywordResearch /></DeferredSection>
       </div>
       <footer>
         <span className="footer-brand">ProfitPilot</span>
